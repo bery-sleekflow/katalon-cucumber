@@ -1,0 +1,10 @@
+{
+  "keywordFileContentHash": "62C328C3AC6A0977C3DA444459A15025",
+  "keywordClasses": [
+    {
+      "name": "helper.CucumberReportGenerator",
+      "keywordMethods": []
+    }
+  ],
+  "javadocParsed": true
+}

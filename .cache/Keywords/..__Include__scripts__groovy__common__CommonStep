@@ -1,0 +1,10 @@
+{
+  "keywordFileContentHash": "549CB3426835B56F77CD22AF0F736347",
+  "keywordClasses": [
+    {
+      "name": "common.CommonStep",
+      "keywordMethods": []
+    }
+  ],
+  "javadocParsed": true
+}
