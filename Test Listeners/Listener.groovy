@@ -21,6 +21,7 @@ import com.kms.katalon.core.annotation.AfterTestCase
 import com.kms.katalon.core.annotation.AfterTestSuite
 import com.kms.katalon.core.context.TestCaseContext
 import com.kms.katalon.core.context.TestSuiteContext
+import com.kms.katalon.core.configuration.RunConfiguration
 import com.kms.katalon.core.cucumber.keyword.CucumberBuiltinKeywords as CucumberKW
 import cucumber.api.CucumberOptions
 import cucumber.api.junit.Cucumber
@@ -35,7 +36,7 @@ import org.junit.runner.RunWith
 	tags = "@p0 and @p1"
 )
 
-class Listener {
+class Listener {	
 	/**
 	 * Add the GLUE option for Cucumber to locate the step definition files.
 	 * @param testCaseContext related information of the executed test case.
@@ -45,19 +46,29 @@ class Listener {
 		CucumberKW.GLUE = ['authentication','common','contact']
 	}
 	
+	@AfterTestCase
+    def afterTestCase(TestCaseContext testCaseContext) {
+        String testCaseId = testCaseContext.getTestCaseId()
+        if (!failedTestCases.containsKey(testCaseId)) {
+            failedTestCases[testCaseId] = 0
+        }
+		
+        if (testCaseContext.getTestCaseStatus() == 'FAILED') {
+            
+            try {
+                // Capture screenshot on failure
+                String screenshotPath = WebUI.takeScreenshot()
+                println "Screenshot captured: " + screenshotPath
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
+        }
+        WebUI.closeBrowser()
+    }
+	
 	@Test
 	void runCucumberTest() {
 	  CucumberKW.runWithCucumberRunner(Listener.class)
 	  WebUI.maximizeWindow();
-	}
-	
-	/**
-	 * Executes after every test case ends.
-	 * @param testCaseContext related information of the executed test case.
-	 */
-	@AfterTestCase
-	def sampleAfterTestCase(TestCaseContext testCaseContext) {
-		WebUI.closeBrowser();
-		
 	}
 }
