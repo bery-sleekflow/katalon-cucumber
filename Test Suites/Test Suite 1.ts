@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestSuiteEntity>
    <description></description>
-   <name>TestSuite_Login</name>
+   <name>Test Suite 1</name>
    <tag></tag>
    <isRerun>false</isRerun>
    <mailRecipient></mailRecipient>
-   <numberOfRerun>1</numberOfRerun>
+   <numberOfRerun>0</numberOfRerun>
    <pageLoadTimeout>30</pageLoadTimeout>
    <pageLoadTimeoutDefault>true</pageLoadTimeoutDefault>
-   <rerunFailedTestCasesOnly>true</rerunFailedTestCasesOnly>
+   <rerunFailedTestCasesOnly>false</rerunFailedTestCasesOnly>
    <rerunImmediately>false</rerunImmediately>
-   <testSuiteGuid>b3bd0011-3102-4cf1-8d49-0cbc1f8f397f</testSuiteGuid>
+   <testSuiteGuid>90526994-4883-4ce0-b46e-a3c74f2fe528</testSuiteGuid>
    <testCaseLink>
-      <guid>867eaef2-7725-40c3-b6af-2a378980f665</guid>
+      <guid>7667741f-4b87-408e-be89-cb7f7a3262c9</guid>
       <isReuseDriver>false</isReuseDriver>
       <isRun>true</isRun>
       <testCaseId>Test Cases/Authentication/Verify Login Feature</testCaseId>

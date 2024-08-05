@@ -1,3 +1,5 @@
 user,email,password
 valid,bery.o+stagingadmin@sleekflow.io,hpr0bpa_zjc.RKW8hnu
 invalid,bery.o+stagingadmin@sleekflow.io,test123
+valid1,bery.o+companynewstaging@sleekflow.io,Lywjo*Ua7!!4fHce4AuU
+invalid1,bery.o+companynewstaging@sleekflow.io,test123

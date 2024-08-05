@@ -54,39 +54,36 @@ class CreateContact {
 	def createContactWithCondition(String condition) {
 		// navigate to contact page
 		commonStep.navigateTo('contact')
-		// create contact 
-		WebUI.click(findTestObject('Object Repository/Contact/ContactListPage/CreateNewContactButton'))
+		// create contact
+		WebUI.click(findTestObject('Object Repository/ContactPage/ContactListPage/CreateNewContactButton'))
 		switch (condition) {
 			case "phone number only":
-				WebUI.focus(findTestObject('Object Repository/Contact/ContactFormPage/PhoneNumberInputText'))
-				WebUI.clearText(findTestObject('Object Repository/Contact/ContactFormPage/PhoneNumberInputText'))
-				WebUI.setText(findTestObject('Object Repository/Contact/ContactFormPage/PhoneNumberInputText'),phoneNumber)
+				WebUI.focus(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'))
+				WebUI.clearText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'))
+				WebUI.setText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'),phoneNumber)
 				break;
 			case "other":
-				WebUI.setText(findTestObject('Object Repository/Contact/ContactFormPage/PhoneNumberInputText'),'000000000')
+				WebUI.setText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'),'000000000')
 				break;
 		}
 		//save contact
-		WebUI.click(findTestObject('Object Repository/Contact/ContactFormPage/CreateButton'))
-		
+		WebUI.click(findTestObject('Object Repository/ContactPage/ContactFormPage/CreateButton'))
 	}
 
 	@Then("contact is created successfully with {string}")
 	def verifyContactCreatedSuccessfully(String condition) {
-	    // Verify redirect to contact list
-	    commonStep.verifyCurrentPage('contacts')
-	    WebUI.verifyElementVisible(findTestObject('Object Repository/Contact/ContactListPage/ContactHeaderText'))
-	    
-	    // Verify contact is displayed in the list
-	    searchContact(phoneNumber)
-	    String actualText = WebUI.getText(findTestObject('Object Repository/Contact/ContactListPage/TableColumnName'))
-	    assert actualText.contains(phoneNumber) : "Expected phone number to be part of the text, but it was not found."
-	    
-		}
-	
-	def searchContact(String input) {
-		WebUI.setText(findTestObject('Object Repository/Contact/ContactListPage/SearchContactInputText'), input)
-		WebUI.sendKeys(findTestObject('Object Repository/Contact/ContactListPage/SearchContactInputText'), Keys.chord(Keys.ENTER))
+		// Verify redirect to contact list
+		commonStep.verifyCurrentPage('contacts')
+		WebUI.verifyElementVisible(findTestObject('Object Repository/ContactPage/ContactListPage/ContactHeaderText'))
+
+		// Verify contact is displayed in the list
+		searchContact(phoneNumber)
+		String actualText = WebUI.getText(findTestObject('Object Repository/ContactPage/ContactListPage/TableColumnName'))
+		assert actualText.contains(phoneNumber) : "Expected phone number to be part of the text, but it was not found."
 	}
-	
+
+	def searchContact(String input) {
+		WebUI.setText(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInputText'), input)
+		WebUI.sendKeys(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInputText'), Keys.chord(Keys.ENTER))
+	}
 }

@@ -23,9 +23,6 @@ import com.kms.katalon.core.annotation.SetUp
 import com.kms.katalon.core.annotation.SetupTestCase
 import com.kms.katalon.core.annotation.TearDown
 import com.kms.katalon.core.annotation.TearDownTestCase
-import com.kms.katalon.core.logging.KeywordLogger
-import com.kms.katalon.core.main.TestCaseExecutor
-import com.kms.katalon.core.main.TestSuiteExecutor
 
 /**
  * Some methods below are samples for using SetUp/TearDown in a test suite.
@@ -36,6 +33,7 @@ import com.kms.katalon.core.main.TestSuiteExecutor
  */
 @SetUp(skipped = true) // Please change skipped to be false to activate this method.
 def setUp() {
+	// Put your code here.
 }
 
 /**

@@ -7,11 +7,10 @@
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//label[contains(text(),'Phone Numbers')]/following::input[@type='tel'][1]</value>
+         <value>//label[contains(text(),'Phone Number')]/following::input[@type='tel'][1]</value>
       </entry>
       <entry>
          <key>BASIC</key>
-         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

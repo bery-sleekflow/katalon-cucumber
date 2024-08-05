@@ -6,11 +6,6 @@
    <defaultProfile>true</defaultProfile>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'https://katalon-studio-samples.github.io/calculator'</initValue>
-      <name>baseUrl</name>
-   </GlobalVariableEntity>
-   <GlobalVariableEntity>
-      <description></description>
       <initValue>'https://staging-revamp.sleekflow.io/'</initValue>
       <name>v2_staging</name>
    </GlobalVariableEntity>
@@ -18,5 +13,15 @@
       <description></description>
       <initValue>'https://staging.sleekflow.io/'</initValue>
       <name>v1_staging</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>''</initValue>
+      <name>baseUrl</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'https://sso-staging.sleekflow.io/'</initValue>
+      <name>loginUrl</name>
    </GlobalVariableEntity>
 </GlobalVariableEntities>
