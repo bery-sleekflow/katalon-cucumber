@@ -1,0 +1,10 @@
+{
+  "keywordFileContentHash": "A4C689DC34F0684F6361CA36EE09268C",
+  "keywordClasses": [
+    {
+      "name": "contact.ContactCreate",
+      "keywordMethods": []
+    }
+  ],
+  "javadocParsed": true
+}

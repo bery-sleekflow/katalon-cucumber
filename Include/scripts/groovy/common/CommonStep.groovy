@@ -7,6 +7,7 @@ import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.checkpoint.Checkpoint
 import com.kms.katalon.core.checkpoint.CheckpointFactory
+import com.kms.katalon.core.configuration.RunConfiguration
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
 import com.kms.katalon.core.model.FailureHandling
 import com.kms.katalon.core.testcase.TestCase
@@ -24,6 +25,7 @@ import internal.GlobalVariable
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
+import com.kms.katalon.core.configuration.RunConfiguration
 
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
 import com.kms.katalon.core.webui.driver.DriverFactory
@@ -49,12 +51,18 @@ class CommonStep {
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
+
+
 		if (version == 'v2') {
-			GlobalVariable.baseUrl = GlobalVariable.v2_staging
+			WebUI.openBrowser(GlobalVariable.v2_staging)
+		} else if (version == 'v1') {
+			WebUI.openBrowser(GlobalVariable.v2_staging)
+		} else if (version == 'Mobile') {
+			String appPath = RunConfiguration.getProjectDir() + "/Data Files/app-stg-release.apk"
+			Mobile.startApplication(appPath, false)
 		} else {
-			GlobalVariable.baseUrl = GlobalVariable.v1_staging
+			throw new IllegalArgumentException("Unknown version: " + version)
 		}
-		WebUI.openBrowser(GlobalVariable.baseUrl)
 	}
 
 	@When("I navigate to (.*) page")
@@ -62,7 +70,7 @@ class CommonStep {
 		WebUI.waitForPageLoad(10)
 		switch(page) {
 			case 'contact':
-				WebUI.click(findTestObject('Object Repository/LeftNavBar/ContactsMenuButton'))
+				WebUI.click(findTestObject('Object Repository/Web/LeftNavBar/ContactsMenuButton'))
 				break;
 			case 'inbox':
 				WebUI.click(findTestObject('Object Repository/LeftNavBar/InboxMenuButton'))
@@ -80,13 +88,13 @@ class CommonStep {
 		}
 		try {
 			// input username
-			WebUI.verifyElementPresent(findTestObject('Object Repository/LoginPage/UsernameField'), 15)
-			WebUI.setText(findTestObject('Object Repository/LoginPage/UsernameField'), credential.email)
-			WebUI.click(findTestObject('Object Repository/LoginPage/ContinueSignInButton'))
+			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/UsernameField'), 15)
+			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/UsernameField'), credential.email)
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueSignInButton'))
 			// input password
-			WebUI.verifyElementPresent(findTestObject('Object Repository/LoginPage/PasswordField'), 15)
-			WebUI.setText(findTestObject('Object Repository/LoginPage/PasswordField'), credential.password)
-			WebUI.click(findTestObject('Object Repository/LoginPage/SignInButton'))
+			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/PasswordField'), 15)
+			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/SignInButton'))
 			WebUI.waitForPageLoad(15)
 			if(WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.baseUrl + '.*', true)) {
 				continueExcedeedDeviceLimit()
@@ -96,20 +104,26 @@ class CommonStep {
 		}
 	}
 
+	@When("I log out from Sleekflow web")
+	def logoutSleekflowWeb() {
+		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'))
+		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SignOutButton'))
+	}
+
 	@Then("I should be on {string} page")
 	def verifyCurrentPage(String page) {
 		if (page.equals("login")) {
 			WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.loginUrl + '.*', true)
 		} else {
 			WebUI.verifyMatch(WebUI.getUrl(), '.*' + page + '.*', true)
-			WebUI.verifyElementPresent(findTestObject('Object Repository/TopNavBar/SettingMenuButton'), 15)
+			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'), 15)
 		}
 	}
 
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
-			WebUI.click(findTestObject('Object Repository/LoginPage/ContinueExceedLimitButton'))
+		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
 		} else {
 			println "Continue button is not present."
 		}
@@ -124,5 +138,16 @@ class CommonStep {
 			}
 		}
 		return null
+	}
+	
+	// Generate a random number with a specified number of digits
+	def randomNumberGenerator(int numberOfDigits) {
+	    int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
+	    int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
+	    
+	    Random rand = new Random()
+	    int randomNumber = rand.nextInt((max - min) + 1) + min
+	    
+	    return randomNumber
 	}
 }

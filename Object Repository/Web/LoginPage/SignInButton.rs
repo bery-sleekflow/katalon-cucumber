@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>SignInButton</name>
+   <tag></tag>
+   <elementGuidId>d0f8281e-7ac1-425e-a6b7-6d1ebea71900</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>._button-login-password</value>
+      </entry>
+      <entry>
+         <key>IMAGE</key>
+      </entry>
+      <entry>
+         <key>BASIC</key>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>CSS</selectorMethod>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>false</useRalativeImagePath>
+</WebElementEntity>
