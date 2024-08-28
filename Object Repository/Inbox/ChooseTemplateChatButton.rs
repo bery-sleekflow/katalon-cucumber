@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>ChooseTemplateChatButton</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>cba37a36-2dda-4880-a94c-c32b4aee3195</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <value>//button[text()='Reply']/following::button[text()='Choose template']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

@@ -48,7 +48,8 @@ import cucumber.api.java.en.When
 
 class CreateContact {
 	CommonStep commonStep = new CommonStep()
-	String phoneNumber = '62856412'
+	String phoneNumber = ''
+	String email = ''
 
 	@When("I create contact with {string}")
 	def createContactWithCondition(String condition) {
@@ -58,12 +59,19 @@ class CreateContact {
 		WebUI.click(findTestObject('Object Repository/ContactPage/ContactListPage/CreateNewContactButton'))
 		switch (condition) {
 			case "phone number only":
-				WebUI.focus(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'))
-				WebUI.clearText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'))
-				WebUI.setText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'),phoneNumber)
+				phoneNumber = '62856412' + commonStep.randomNumberGenerator(3).toString()
+				WebUI.focus(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInput'))
+				WebUI.clearText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInput'))
+				WebUI.setText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInput'),phoneNumber)
+				break;
+			case "email only":
+				email = 'automation.test+' + commonStep.randomNumberGenerator(4).toString() + '@mail.com'
+				WebUI.focus(findTestObject('Object Repository/Web/ContactPage/ContactFormPage/EmailInput'))
+				WebUI.clearText(findTestObject('Object Repository/Web/ContactPage/ContactFormPage/EmailInput'))
+				WebUI.setText(findTestObject('Object Repository/Web/ContactPage/ContactFormPage/EmailInput'),email)
 				break;
 			case "other":
-				WebUI.setText(findTestObject('Object Repository/ContactPage/ContactFormPage/PhoneNumberInputText'),'000000000')
+				WebUI.setText(findTestObject('Object Repository/Web/ContactPage/ContactFormPage/PhoneNumberInput'),'000000000')
 				break;
 		}
 		//save contact
@@ -72,18 +80,32 @@ class CreateContact {
 
 	@Then("contact is created successfully with {string}")
 	def verifyContactCreatedSuccessfully(String condition) {
+		String search = ''
 		// Verify redirect to contact list
 		commonStep.verifyCurrentPage('contacts')
-		WebUI.verifyElementVisible(findTestObject('Object Repository/ContactPage/ContactListPage/ContactHeaderText'))
-
+		WebUI.verifyElementVisible(findTestObject('Object Repository/Web/ContactPage/ContactListPage/ContactHeaderText'))
+		switch (condition) {
+			case "phone number only":
+				search = phoneNumber
+				break;
+			case "email only":
+				search = email
+				break;
+		}
 		// Verify contact is displayed in the list
-		searchContact(phoneNumber)
-		String actualText = WebUI.getText(findTestObject('Object Repository/ContactPage/ContactListPage/TableColumnName'))
-		assert actualText.contains(phoneNumber) : "Expected phone number to be part of the text, but it was not found."
+		searchContact(search)
+		String actualText = WebUI.getText(findTestObject('Object Repository/Web/ContactPage/ContactListPage/TableColumnName'))
+		assert actualText.contains(search) : "Expected contact to be part of the text, but it was not found."
 	}
 
 	def searchContact(String input) {
-		WebUI.setText(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInputText'), input)
-		WebUI.sendKeys(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInputText'), Keys.chord(Keys.ENTER))
+		WebUI.setText(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInput'), input)
+		WebUI.sendKeys(findTestObject('Object Repository/ContactPage/ContactListPage/SearchContactInput'), Keys.chord(Keys.ENTER))
+	}
+
+	@And("I delete the created contact")
+	def deleteContact(String searchInput) {
+		searchContact(searchInput)
+		WebUI.click(findTestObject('Object Repository/Web/ContactPage/ContactListPage/FirstTableColumnName'))
 	}
 }

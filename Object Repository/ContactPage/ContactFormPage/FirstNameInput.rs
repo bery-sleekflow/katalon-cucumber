@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>FirstNameInput</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>9c29d96b-3825-47d5-a371-fff1039f1382</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <value>//input[@name=&quot;firstName&quot;]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

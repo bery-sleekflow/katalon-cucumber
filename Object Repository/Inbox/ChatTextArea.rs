@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>ChatTextArea</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>2c41e9a7-da5d-433f-9ce7-facfdf07b871</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
+         <key>XPATH</key>
+         <value>//button[text()='Reply']/following::textarea</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <key>BASIC</key>
+         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

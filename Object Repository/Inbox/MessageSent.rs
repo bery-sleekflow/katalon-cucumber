@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>MessageSent</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>92ac67d0-95f3-4d04-b2f2-4d4bed9fec3c</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <value>(//div[contains(@class,&quot;sf-message-wrapper&quot;)])[${sequence}]${additionalXpath}</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

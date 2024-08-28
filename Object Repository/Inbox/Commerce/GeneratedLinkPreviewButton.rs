@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>GeneratedLinkPreviewButton</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>2bf9c62c-b2c8-4b94-9625-137f087eb5dd</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <value>//a[text()='Preview link']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

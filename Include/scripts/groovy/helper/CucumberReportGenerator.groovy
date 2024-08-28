@@ -1,4 +1,5 @@
-package helper;
+package helper
+;
 
 @Grab(group='net.masterthought', module='cucumber-reporting', version='5.8.1')
 import net.masterthought.cucumber.Configuration

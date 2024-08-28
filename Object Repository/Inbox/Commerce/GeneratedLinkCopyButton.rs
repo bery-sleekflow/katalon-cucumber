@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>PhoneNumberInputText</name>
+   <name>GeneratedLinkCopyButton</name>
    <tag></tag>
-   <elementGuidId>ebdb67aa-2f02-4eef-8388-a7a4c6fb6029</elementGuidId>
+   <elementGuidId>11749d6d-5b5e-4d28-9f28-5f08d257a531</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>XPATH</key>
-         <value>//label[contains(text(),'Phone Number')]/following::input[@type='tel'][1]</value>
+         <key>BASIC</key>
+         <value></value>
       </entry>
       <entry>
-         <key>BASIC</key>
+         <key>XPATH</key>
+         <value>//button[@aria-label=&quot;Copy conversation link&quot;]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

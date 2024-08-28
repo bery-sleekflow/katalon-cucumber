@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>SubMenuInbox</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>8419c1ac-65d2-424f-a4de-c81ee38eff82</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
+         <key>XPATH</key>
+         <value>//div/span[contains(text(),'${subHeader}')]/following::span[contains(text(), '${groupName}')]</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <key>BASIC</key>
+         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

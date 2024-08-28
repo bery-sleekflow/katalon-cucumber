@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TableColumnName</name>
+   <name>SignOutButton</name>
    <tag></tag>
-   <elementGuidId>eea4e158-5fa3-4d22-b18f-b8edef7c602b</elementGuidId>
+   <elementGuidId>70109e8a-a784-4de5-9328-e8b6fa500725</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//tbody/tr/td[2]/a)[1]</value>
+         <value>//div/span[text()='Sign out']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
