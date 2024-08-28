@@ -43,15 +43,15 @@ class Listener {
 	 */
 	@BeforeTestCase
 	def beforeTestCase(TestCaseContext testCaseContext) {
-		CucumberKW.GLUE = ['authentication','common','contact']
+		CucumberKW.GLUE = ['default package','authentication','common','contact']
 	}
 	
 	@AfterTestCase
     def afterTestCase(TestCaseContext testCaseContext) {
         String testCaseId = testCaseContext.getTestCaseId()
-        if (!failedTestCases.containsKey(testCaseId)) {
+        /*if (!failedTestCases.containsKey(testCaseId)) {
             failedTestCases[testCaseId] = 0
-        }
+        }*/
 		
         if (testCaseContext.getTestCaseStatus() == 'FAILED') {
             
@@ -68,7 +68,6 @@ class Listener {
 	
 	@Test
 	void runCucumberTest() {
-	  CucumberKW.runWithCucumberRunner(Listener.class)
-	  WebUI.maximizeWindow();
+		CucumberKW.runWithCucumberRunner(Listener.class)
 	}
 }
