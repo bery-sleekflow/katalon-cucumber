@@ -8,7 +8,7 @@ Feature: Commerce - Stripe
 
   @p0
   Scenario: User able to generate Custom Payment Link
-    Given I open conversation with "Bery" from "company inbox" with name "All"
+    Given I open conversation with "Bery" from "Company Inbox" with group name "All"
     When I generate "Custom" payment link with "single" product
     Then I should see text "Hey, Check out with this payment link !" in textbox chat
     And I am able to send the message to customer 
