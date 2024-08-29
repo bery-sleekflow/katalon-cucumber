@@ -48,12 +48,12 @@ class Inbox {
 	CommonStep commonStep = new CommonStep()
 	String messageToCustomer = ''
 
-	@Given("I open conversation with {string} from {string} with name {string}")
+	@Given("I open conversation with {string} from {string} with group name {string}")
 	def openConversation(String name, String location, String groupName) {
 		// navigate to inbox page
 		commonStep.navigateTo('inbox')
 		// Determine xpath params
-		if (location == 'company inbox') {
+		if (location == 'Company Inbox') {
 			location = 'COMPANY INBOX'
 		} else {
 			location = 'My inbox'
@@ -78,6 +78,15 @@ class Inbox {
 		messageToCustomer = expectedText
 	}
 	
+	@When("I send message {string} to customer")
+	def enterMessageChat(String message) {
+		// enter message
+		WebUI.setText(findTestObject('Object Repository/Inbox/ChatTextArea'), message)
+		verifyTextInTextbox(message)
+		// send message
+		sendMessageToCustomer()
+	}
+	
 	@And("I am able to send the message to customer")
 	def sendMessageToCustomer() {
 		if (messageToCustomer != '') {
@@ -87,16 +96,25 @@ class Inbox {
 	
 	@Then("I should see the {string} sent to customer")
 	def verifyMessageSentToCustomer(String type) {
+		// waiting for message to be sent
+		WebUI.delay(2)
+		
+		Map<String, String> params = [:]
 		if (messageToCustomer != '') {
 			if (type == 'payment link') {
-				Map<String, String> params = [
+				params = [
 					('sequence') : 'last()',
 					('additionalXpath') : '/descendant::p[3]'
 				]
-				TestObject dynamicObject = findTestObject("Object Repository/Inbox/MessageSent", params)
-				String actualText = WebUI.getText(dynamicObject)
-				assert actualText.contains(messageToCustomer) : "Expected message not found. Expected to contain: '" + messageToCustomer + "' but found: '" + actualText + "'"
+			} else {
+				params = [
+					('sequence') : 'last()',
+					('additionalXpath') : '/descendant::p[1]'
+				]
 			}
+			TestObject dynamicObject = findTestObject("Object Repository/Inbox/MessageSent", params)
+			String actualText = WebUI.getText(dynamicObject)
+			assert actualText.contains(messageToCustomer) : "Expected message not found. Expected to contain: '" + messageToCustomer + "' but found: '" + actualText + "'"
 		}
 	}
 	
