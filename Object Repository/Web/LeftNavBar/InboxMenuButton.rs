@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>InboxMenuButton</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>f2052d60-4b99-4a5c-8ffa-9b48bcec4d38</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>//a[@aria-label=&quot;Inbox&quot;]</value>
+      </entry>
+      <entry>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>AddItemButton</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>5428cfad-905e-4c8b-babf-e04c743bac6c</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>//button[text()='Add item']</value>
+      </entry>
+      <entry>
+         <key>BASIC</key>
+         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

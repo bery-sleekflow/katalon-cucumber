@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>ChooseTemplateChatButton</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>cba37a36-2dda-4880-a94c-c32b4aee3195</elementGuidId>
    <selectorCollection>
       <entry>
+         <key>BASIC</key>
+         <value></value>
+      </entry>
+      <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>//button[text()='Reply']/following::button[text()='Choose template']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

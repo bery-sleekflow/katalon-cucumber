@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>SendMessageButton</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>078de37f-5ecc-4b90-ac82-9b7f4cb21200</elementGuidId>
    <selectorCollection>
       <entry>
+         <key>BASIC</key>
+         <value></value>
+      </entry>
+      <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>//button[text()='Reply']/following::button[text()='Send']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

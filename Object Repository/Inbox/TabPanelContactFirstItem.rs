@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>TabPanelContactFirstItem</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>a02f0114-accb-4d44-b8a7-6ebccff6c796</elementGuidId>
    <selectorCollection>
       <entry>
+         <key>BASIC</key>
+         <value></value>
+      </entry>
+      <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>//div[@id='tabpanel-contacts']//descendant::div[1]/li</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

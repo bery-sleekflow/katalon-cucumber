@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>SearchContactInput</name>
+   <name>MessageSent</name>
    <tag></tag>
-   <elementGuidId>1f799372-a32e-42f3-9db0-ec177bd484e7</elementGuidId>
+   <elementGuidId>92ac67d0-95f3-4d04-b2f2-4d4bed9fec3c</elementGuidId>
    <selectorCollection>
       <entry>
+         <key>BASIC</key>
+         <value></value>
+      </entry>
+      <entry>
          <key>XPATH</key>
-         <value>//input[@name=&quot;search&quot;]</value>
+         <value>(//div[contains(@class,&quot;sf-message-wrapper&quot;)])[${sequence}]${additionalXpath}</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

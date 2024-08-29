@@ -9,9 +9,6 @@
          <key>XPATH</key>
          <value>//label[contains(text(),'Phone Number')]/following::input[@type='tel'][1]</value>
       </entry>
-      <entry>
-         <key>BASIC</key>
-      </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorEnabled>false</smartLocatorEnabled>

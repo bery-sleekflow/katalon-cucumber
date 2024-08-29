@@ -1,4 +1,5 @@
 package common
+
 import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
@@ -28,6 +29,7 @@ import org.openqa.selenium.By
 import com.kms.katalon.core.configuration.RunConfiguration
 
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
+import com.kms.katalon.core.webui.common.WebUiCommonHelper
 import com.kms.katalon.core.webui.driver.DriverFactory
 
 import com.kms.katalon.core.testobject.RequestObject
@@ -62,6 +64,15 @@ class CommonStep {
 			Mobile.startApplication(appPath, false)
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
+		}
+		WebUI.openBrowser(GlobalVariable.baseUrl)
+		// Maximize the window
+		WebUI.delay(2)
+		try {
+			WebUI.maximizeWindow()
+		} catch (Exception e) {
+			// If maximizing fails, set the viewport size manually as a fallback
+			WebUI.setViewPortSize(1920, 1080)
 		}
 	}
 
@@ -120,6 +131,19 @@ class CommonStep {
 		}
 	}
 
+	@When("I log out from Sleekflow web")
+	def logoutSleekflowWeb() {
+		WebUI.verifyElementPresent(findTestObject('Object Repository/TopNavBar/SettingMenuButton'), 15)
+		WebUI.click(findTestObject('Object Repository/TopNavBar/SettingMenuButton'))
+		WebUI.click(findTestObject('Object Repository/TopNavBar/SignOutButton'))
+	}
+	
+	def static clearElementText(TestObject to) {
+		WebElement element = WebUiCommonHelper.findWebElement(to,30)
+		WebUI.executeJavaScript("arguments[0].value=''", Arrays.asList(element))
+		WebUI.delay(2)
+	   }
+
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
 		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
@@ -139,15 +163,15 @@ class CommonStep {
 		}
 		return null
 	}
-	
+
 	// Generate a random number with a specified number of digits
 	def randomNumberGenerator(int numberOfDigits) {
-	    int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
-	    int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
-	    
-	    Random rand = new Random()
-	    int randomNumber = rand.nextInt((max - min) + 1) + min
-	    
-	    return randomNumber
+		int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
+		int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
+
+		Random rand = new Random()
+		int randomNumber = rand.nextInt((max - min) + 1) + min
+
+		return randomNumber
 	}
 }
