@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>FirstNameInputText</name>
+   <name>EnterMessageChatButton</name>
    <tag></tag>
-   <elementGuidId>9c29d96b-3825-47d5-a371-fff1039f1382</elementGuidId>
+   <elementGuidId>dd5735b3-9991-4904-a2c6-5c506487b8cf</elementGuidId>
    <selectorCollection>
-      <entry>
-         <key>XPATH</key>
-         <value>//input[@name=&quot;firstName&quot;]</value>
-      </entry>
       <entry>
          <key>BASIC</key>
          <value></value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//button[text()='Reply']/following::button[text()='Enter message']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
