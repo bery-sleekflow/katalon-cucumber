@@ -1,10 +1,10 @@
 {
-  "keywordFileContentHash": "8B5D577BF98EEFFFDC8D9F68996C9F34",
+  "keywordFileContentHash": "C01DCD85C5994A5B28D0EAC2C13AB4D8",
   "keywordClasses": [
     {
-      "name": "common.CommonMobile",
+      "name": "CommonMobile",
       "keywordMethods": []
     }
   ],
-  "javadocParsed": false
+  "javadocParsed": true
 }

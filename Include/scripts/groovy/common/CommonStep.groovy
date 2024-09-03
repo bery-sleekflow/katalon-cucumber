@@ -26,7 +26,6 @@ import internal.GlobalVariable
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
-import com.kms.katalon.core.configuration.RunConfiguration
 
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
 import com.kms.katalon.core.webui.common.WebUiCommonHelper
@@ -47,25 +46,25 @@ import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 
+import org.openqa.selenium.chrome.ChromeDriver
+
 
 
 class CommonStep {
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
-
-
+		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		WebDriver driver = new ChromeDriver()
+		DriverFactory.changeWebDriver(driver)
+		
 		if (version == 'v2') {
-			WebUI.openBrowser(GlobalVariable.v2_staging)
+			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
-			WebUI.openBrowser(GlobalVariable.v2_staging)
-		} else if (version == 'Mobile') {
-			String appPath = RunConfiguration.getProjectDir() + "/Data Files/app-stg-release.apk"
-			Mobile.startApplication(appPath, false)
+			WebUI.navigateToUrl(GlobalVariable.v1_staging)
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
-		WebUI.openBrowser(GlobalVariable.baseUrl)
 		// Maximize the window
 		WebUI.delay(2)
 		try {
@@ -84,7 +83,7 @@ class CommonStep {
 				WebUI.click(findTestObject('Object Repository/Web/LeftNavBar/ContactsMenuButton'))
 				break;
 			case 'inbox':
-				WebUI.click(findTestObject('Object Repository/LeftNavBar/InboxMenuButton'))
+				WebUI.click(findTestObject('Object Repository/Web/LeftNavBar/InboxMenuButton'))
 				break;
 		}
 	}
@@ -115,12 +114,6 @@ class CommonStep {
 		}
 	}
 
-	@When("I log out from Sleekflow web")
-	def logoutSleekflowWeb() {
-		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'))
-		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SignOutButton'))
-	}
-
 	@Then("I should be on {string} page")
 	def verifyCurrentPage(String page) {
 		if (page.equals("login")) {
@@ -133,19 +126,20 @@ class CommonStep {
 
 	@When("I log out from Sleekflow web")
 	def logoutSleekflowWeb() {
-		WebUI.verifyElementPresent(findTestObject('Object Repository/TopNavBar/SettingMenuButton'), 15)
-		WebUI.click(findTestObject('Object Repository/TopNavBar/SettingMenuButton'))
-		WebUI.click(findTestObject('Object Repository/TopNavBar/SignOutButton'))
+		WebUI.verifyElementPresent(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'), 15)
+		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'))
+		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SignOutButton'))
 	}
-	
+
 	def static clearElementText(TestObject to) {
 		WebElement element = WebUiCommonHelper.findWebElement(to,30)
 		WebUI.executeJavaScript("arguments[0].value=''", Arrays.asList(element))
 		WebUI.delay(2)
-	   }
+	}
 
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
+		WebUI.delay(10)
 		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
 		} else {

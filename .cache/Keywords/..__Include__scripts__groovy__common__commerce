@@ -1,10 +1,10 @@
 {
-  "keywordFileContentHash": "9538C377667C13AED40A6C8488F4F8D0",
+  "keywordFileContentHash": "F67D1E01184404B7289BD69BC9817998",
   "keywordClasses": [
     {
       "name": "common.Commerce",
       "keywordMethods": []
     }
   ],
-  "javadocParsed": false
+  "javadocParsed": true
 }

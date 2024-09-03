@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>End to End Web to Mobile</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>bbf83ab5-78b0-446b-b35b-4f4a14a691fa</testCaseGuid>
+</TestCaseEntity>

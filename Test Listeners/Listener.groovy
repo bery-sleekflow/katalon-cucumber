@@ -12,6 +12,7 @@ import com.kms.katalon.core.testobject.TestObject as TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
+import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
 
 import internal.GlobalVariable as GlobalVariable
 
@@ -43,7 +44,7 @@ class Listener {
 	 */
 	@BeforeTestCase
 	def beforeTestCase(TestCaseContext testCaseContext) {
-		CucumberKW.GLUE = ['default package','authentication','common','contact']
+		CucumberKW.GLUE = ['common','contact','commerce','inbox','mobile']
 	}
 	
 	@AfterTestCase
@@ -63,7 +64,22 @@ class Listener {
                 e.printStackTrace()
             }
         }
-        WebUI.closeBrowser()
+		
+		// Check if the mobile driver session is still active before closing the app
+		try {
+			if (MobileDriverFactory.getDriver() != null) {
+				Mobile.closeApplication()
+			}
+		} catch (Exception e) {
+			println("Failed to close the mobile application: " + e.message)
+		}
+	
+		// Close the browser session
+		try {
+			WebUI.closeBrowser()
+		} catch (Exception e) {
+			println("Failed to close the browser: " + e.message)
+		}
     }
 	
 	@Test

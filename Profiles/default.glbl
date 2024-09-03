@@ -24,4 +24,14 @@
       <initValue>'https://sso-staging.sleekflow.io/'</initValue>
       <name>loginUrl</name>
    </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'Katalon Studio Free Arm64.app'</initValue>
+      <name>KatalonApp</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>''</initValue>
+      <name>messageSentToCustomer</name>
+   </GlobalVariableEntity>
 </GlobalVariableEntities>

@@ -1,8 +1,8 @@
 {
-  "keywordFileContentHash": "3D628EF43867A934B9B81A618237B917",
+  "keywordFileContentHash": "CDDD4D7A5186804E1D9179BA4DE0BE1C",
   "keywordClasses": [
     {
-      "name": "Listener",
+      "name": "inbox.Inbox",
       "keywordMethods": []
     }
   ],
