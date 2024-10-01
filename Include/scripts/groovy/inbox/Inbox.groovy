@@ -47,25 +47,8 @@ import cucumber.api.java.en.When
 
 class Inbox {
 	CommonStep commonStep = new CommonStep()
-	
-	@When("user {string} open conversation with {string} from {string} with group name {string}")
-	def openConversationUser(String user, String customerName, String location, String groupName) {
-		if (user == GlobalVariable.user1) {
-			if (GlobalVariable.webDriver1() != null) {
-			DriverFactory.changeWebDriver(GlobalVariable.webDriver1())  // Switch to driver1 for user1
-			} else {
-				WebUI.comment("driver1 is null, cannot switch to User 1's browser")
-			}
-		}else if (user == GlobalVariable.user2) {
-			if (GlobalVariable.webDriver2() != null) {
-				DriverFactory.changeWebDriver(GlobalVariable.webDriver2())  // Switch to driver2 for user2
-			} else {
-				WebUI.comment("driver2 is null, cannot switch to User 2's browser")
-			}
-		}
-		openConversation(customerName, location, groupName)
-	}
-	
+	String messageToInternal
+
 	@Given("I open conversation with {string} from {string} with group name {string}")
 	def openConversation(String name, String location, String groupName) {
 		// navigate to inbox page
@@ -88,17 +71,23 @@ class Inbox {
 		WebUI.setText(findTestObject("Object Repository/Web/Inbox/SearchInput"), name)
 		WebUI.click(findTestObject("Object Repository/Web/Inbox/TabPanelContactFirstItem"))
 	}
-	
+
+
+	@When("user {string} open conversation with {string} from {string} with group name {string}")
+	def openConversationByUser(String user, String customerName, String location, String groupName) {
+		commonStep.changeWebDriver(user)
+		openConversation(customerName, location, groupName)
+	}
 
 	@Then("I should see text {string} in textbox chat")
 	def verifyTextInTextbox(String expectedText) {
-		String actualText = WebUI.getAttribute(findTestObject('Object Repository/Web/Inbox/ChatTextArea'), 'value')
+		String actualText = WebUI.getAttribute(findTestObject('Object Repository/Web/Inbox/ChatboxTextArea'), 'value')
 		assert actualText.contains(expectedText) : "Text in the text area does not contain the expected text. Expected: '" + expectedText + "' but found: '" + actualText + "'"
 		GlobalVariable.messageSentToCustomer = expectedText
 	}
 
 	@When("I send message {string} to customer")
-	def enterMessageChat(String message) {
+	def enterMessageToCustomer(String message) {
 		// click enter message button if visible
 		replyButtonChecker('enter message')
 		//  adding unique number for identifier
@@ -107,40 +96,88 @@ class Inbox {
 		}
 		GlobalVariable.messageSentToCustomer = message
 		// enter message and send to customer
-		WebUI.setText(findTestObject('Object Repository/Web/Inbox/ChatTextArea'), message)
+		WebUI.setText(findTestObject('Object Repository/Web/Inbox/ChatboxTextArea'), message)
 		verifyTextInTextbox(message)
-		sendMessageToCustomer()
+		sendMessage()
 	}
 
-	@And("I am able to send the message to customer")
-	def sendMessageToCustomer() {
-		if (GlobalVariable.messageSentToCustomer != '') {
-			WebUI.click(findTestObject('Object Repository/Web/Inbox/SendMessageButton'))
+	@When("I send message {string} to internal note")
+	def enterMessageToInternal(String message) {
+		// click internal note button
+		WebUI.click(findTestObject('Object Repository/Web/Inbox/ChatboxInternalnotButton'))
+		// adding unique number for identifier
+		message = message + commonStep.randomNumberGenerator(4)
+		messageToInternal = message
+		// enter message and send to internal note
+		WebUI.setText(findTestObject('Object Repository/Web/Inbox/ChatboxTextArea'), message)
+		verifyTextInTextbox(message)
+		sendMessage()
+	}
+
+	@When("user {string} send message {string} to internal note")
+	def enterMessageToInternalByUser(String user, String message) {
+		commonStep.changeWebDriver(user)
+		enterMessageToInternal(message)
+	}
+
+	@And("I am able to send the message")
+	def sendMessage() {
+		if (GlobalVariable.messageSentToCustomer != '' || messageToInternal != '') {
+			WebUI.click(findTestObject('Object Repository/Web/Inbox/ChatboxSendMessageButton'))
 		}
 	}
 
-	@Then("I should see the {string} sent to customer")
-	def verifyMessageSentToCustomer(String type) {
-		// waiting for message to be sent
+	@Then("I should see the {string} sent to {string}")
+	def verifyMessageSent(String type, String target) {
+		// Waiting for message to be sent
 		WebUI.delay(2)
-
-		Map<String, String> params = [:]
-		if (GlobalVariable.messageSentToCustomer != '') {
-			if (type == 'payment link') {
-				params = [
-					('sequence') : 'last()',
-					('additionalXpath') : '/descendant::p[3]'
-				]
-			} else {
-				params = [
-					('sequence') : 'last()',
-					('additionalXpath') : '/descendant::p[1]'
-				]
-			}
-			TestObject dynamicObject = findTestObject("Object Repository/Web/Inbox/MessageSent", params)
-			String actualText = WebUI.getText(dynamicObject)
-			assert actualText.contains(GlobalVariable.messageSentToCustomer) : "Expected message not found. Expected to contain: '" + GlobalVariable.messageSentToCustomer + "' but found: '" + actualText + "'"
+	
+		String dynamicXpath = getDynamicXpath(type, target)
+		String expectedMessage = (target == 'customer') ? GlobalVariable.messageSentToCustomer : messageToInternal
+	
+		// Validate for both customer and internal messages
+		validateMessage(dynamicXpath, expectedMessage)
+	
+		// Special validation for internal notes if target is internal
+		if (target == 'internal') {
+			validateMessage('/descendant::p[2]', "Internal note")
 		}
+	}
+	
+	@Then("user {string} should see the {string} from user {string}")
+	def verifyMessageSentByUser(String user1, String type, String user2) {
+		commonStep.changeWebDriver(user1)
+		def credential = commonStep.searchUser(user2)
+		// Waiting for message to be sent
+		WebUI.delay(2)
+	
+		if (type == 'message') {
+			// Validate the internal message sequence and the sender's name
+			validateMessage('/descendant::p[1]', messageToInternal)
+			validateMessage('/descendant::p[2]', "Internal note")
+			validateMessage('/descendant::p[3]', credential.name)
+		}
+	}
+	
+	// General function to fetch the correct XPath based on type and target
+	private String getDynamicXpath(String type, String target) {
+		if (target == 'customer') {
+			return (type == 'payment link') ? '/descendant::p[3]' : '/descendant::p[1]'
+		} else if (target == 'internal') {
+			return '/descendant::p[1]'  // Default XPath for internal messages
+		}
+		return null
+	}
+	
+	// General validation function for message content
+	private void validateMessage(String xpath, String expectedMessage) {
+		Map<String, String> params = [
+			('sequence') : 'last()',
+			('additionalXpath') : xpath
+		]
+		TestObject dynamicObject = findTestObject("Object Repository/Web/Inbox/MessageSent", params)
+		String actualText = WebUI.getText(dynamicObject)
+		assert actualText.contains(expectedMessage) : "Expected message not found. Expected to contain: '" + expectedMessage + "' but found: '" + actualText + "'"
 	}
 
 	def replyButtonChecker(String action){
@@ -156,6 +193,4 @@ class Inbox {
 			println "Enter message button is not present."
 		}
 	}
-	
-	
 }

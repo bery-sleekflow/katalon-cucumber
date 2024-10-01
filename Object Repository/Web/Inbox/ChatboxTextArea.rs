@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>EnterMessageChatButton</name>
+   <name>ChatboxTextArea</name>
    <tag></tag>
-   <elementGuidId>dd5735b3-9991-4904-a2c6-5c506487b8cf</elementGuidId>
+   <elementGuidId>2c41e9a7-da5d-433f-9ce7-facfdf07b871</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//button[text()='Reply']/following::button[text()='Enter message']</value>
+         <value>//button[text()='Reply']/following::textarea</value>
       </entry>
       <entry>
          <key>BASIC</key>

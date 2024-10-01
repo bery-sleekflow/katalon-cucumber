@@ -59,6 +59,7 @@ class CommonStep {
 	WebDriver driver
 	WebDriver driver1
 	WebDriver driver2
+	def credential
 
 	//api
 	ResponseObject response
@@ -78,6 +79,10 @@ class CommonStep {
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
+		maximizeWindowBrowser()
+	}
+	
+	def maximizeWindowBrowser() {
 		// Maximize the window
 		WebUI.delay(2)
 		try {
@@ -101,10 +106,9 @@ class CommonStep {
 		}
 	}
 
-	@When("I log in using {string} credential")
-	def loginWeb(String user) {
+	def loginInput(String user) {
 		// check user from data files
-		def credential = searchUser(user)
+		credential = searchUser(user)
 		if (credential == null) {
 			WebUI.comment("User not found: " + user)
 			return
@@ -126,6 +130,11 @@ class CommonStep {
 		} catch (Exception e) {
 			WebUI.comment("An error occurred during the login process: " + e.getMessage())
 		}
+	}
+
+	@When("I log in using {string} credential")
+	def loginWeb(String user) {
+		loginInput(user)
 
 		// Get token from local storage browser
 		String keyToRetrieve = GlobalVariable.v2ApiTokenSearch
@@ -167,7 +176,8 @@ class CommonStep {
 		if (driver1 != null) {
 			DriverFactory.changeWebDriver(driver1)
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
-			loginWeb(user1)
+			maximizeWindowBrowser()
+			loginInput(user1)			
 			GlobalVariable.user1 = user1
 			GlobalVariable.webDriver1 = driver1
 		} else {
@@ -179,11 +189,40 @@ class CommonStep {
 		if (driver2 != null) {
 			DriverFactory.changeWebDriver(driver2)
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
-			loginWeb(user2)
+			maximizeWindowBrowser()
+			loginInput(user2)
 			GlobalVariable.user2 = user2
 			GlobalVariable.webDriver2 = driver2
 		} else {
 			WebUI.comment("Failed to initialize driver2 for user: " + user2)
+		}
+	}
+
+	def changeWebDriver(user) {
+		if (user == GlobalVariable.user1) {
+			if (GlobalVariable.webDriver1 != null) {
+				// Check if the current WebDriver is already set to webDriver1
+				if (DriverFactory.getWebDriver() != GlobalVariable.webDriver1) {
+					DriverFactory.changeWebDriver(GlobalVariable.webDriver1)  // Switch to driver1 for user1
+					WebUI.comment("Switched to User 1's browser.")
+				} else {
+					WebUI.comment("Already using User 1's browser.")
+				}
+			} else {
+				WebUI.comment("driver1 is null, cannot switch to User 1's browser.")
+			}
+		} else if (user == GlobalVariable.user2) {
+			if (GlobalVariable.webDriver2 != null) {
+				// Check if the current WebDriver is already set to webDriver2
+				if (DriverFactory.getWebDriver() != GlobalVariable.webDriver2) {
+					DriverFactory.changeWebDriver(GlobalVariable.webDriver2)  // Switch to driver2 for user2
+					WebUI.comment("Switched to User 2's browser.")
+				} else {
+					WebUI.comment("Already using User 2's browser.")
+				}
+			} else {
+				WebUI.comment("driver2 is null, cannot switch to User 2's browser.")
+			}
 		}
 	}
 
@@ -225,7 +264,7 @@ class CommonStep {
 		CSVData data = TestDataFactory.findTestData('Data Files/staging_login')
 		for (def row = 1; row <= data.getRowNumbers(); row++) {
 			if (data.getValue('user', row) == user) {
-				return [email: data.getValue('email', row), password: data.getValue('password', row)]
+				return [name: data.getValue('name', row), email: data.getValue('email', row), password: data.getValue('password', row)]
 			}
 		}
 		return null
@@ -243,7 +282,7 @@ class CommonStep {
 	}
 
 	@When("I call {string} to endpoint {string} with body {string}")
-	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {	
+	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {
 		// validate request method
 		if (![
 					"POST",
@@ -266,56 +305,56 @@ class CommonStep {
 			new TestObjectProperty("Authorization", com.kms.katalon.core.testobject.ConditionType.EQUALS, "Bearer " + GlobalVariable.bearerToken),
 			new TestObjectProperty("Content-Type", com.kms.katalon.core.testobject.ConditionType.EQUALS, "application/json")
 		])
-		
+
 		// Read body content from the JSON file
 		if (["POST", "PUT", "DELETE"].contains(method.toUpperCase()) && jsonFilePath != null) {
-	        // Modify JSON file content and get the updated request body
-	        String modifiedRequestBody = modifyBodyContentJsonFile(jsonFilePath, bodyFieldsToModify)
-	
-	        if (modifiedRequestBody != null) {
-	            request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
-	        } else {
-	            println "Failed to read or modify the body content from: " + jsonFilePath
-	            return
-	        }
+			// Modify JSON file content and get the updated request body
+			String modifiedRequestBody = modifyBodyContentJsonFile(jsonFilePath, bodyFieldsToModify)
+
+			if (modifiedRequestBody != null) {
+				request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
+			} else {
+				println "Failed to read or modify the body content from: " + jsonFilePath
+				return
+			}
 		}
 
-		// Send the request 
+		// Send the request
 		response = WS.sendRequest(request)
 		if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
 			println "Success for call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
 		}else {
 			println "Failed to call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
 		}
-		   
+
 		//println "Response body: " + response.getResponseBodyContent()
 	}
-	
+
 	// General function to modify body content from a JSON file
 	def modifyBodyContentJsonFile(String jsonFilePath, Map<String, Object> fieldsToModify) {
-	    try {
-	        File jsonFile = new File(jsonFilePath)
-	        
-	        if (!jsonFile.exists()) {
-	            println "JSON file not found at: " + jsonFilePath
-	            return null
-	        }
-	
-	        // Parse the JSON file
-	        def jsonSlurper = new JsonSlurper()
-	        def jsonContent = jsonSlurper.parseText(jsonFile.text)
-	        
-	        // Modify the specified fields in the JSON
-	        fieldsToModify.each { key, value ->
-	            jsonContent[key] = value
-	        }
-	
-	        // Convert the modified map back to a JSON string
-	        return JsonOutput.toJson(jsonContent)
-	    } catch (Exception e) {
-	        println "Error while modifying JSON content: " + e.message
-	        return null
-	    }
+		try {
+			File jsonFile = new File(jsonFilePath)
+
+			if (!jsonFile.exists()) {
+				println "JSON file not found at: " + jsonFilePath
+				return null
+			}
+
+			// Parse the JSON file
+			def jsonSlurper = new JsonSlurper()
+			def jsonContent = jsonSlurper.parseText(jsonFile.text)
+
+			// Modify the specified fields in the JSON
+			fieldsToModify.each { key, value ->
+				jsonContent[key] = value
+			}
+
+			// Convert the modified map back to a JSON string
+			return JsonOutput.toJson(jsonContent)
+		} catch (Exception e) {
+			println "Error while modifying JSON content: " + e.message
+			return null
+		}
 	}
 
 	WebDriver getDriver1() {

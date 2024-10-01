@@ -1,8 +1,6 @@
-user,email,password
-valid,bery.o+stagingadmin@sleekflow.io,hpr0bpa_zjc.RKW8hnu
-invalid,bery.o+stagingadmin@sleekflow.io,test123
-staff1,bery.o+stgstaff@sleekflow.io,tNmm637_fHgRhcuJYXH*
-admin2,bery.o+companynewstaging@sleekflow.io,Lywjo*Ua7!!4fHce4AuU
-staff2,bery.o+companynewstaff@sleekflow.io,Q9XvLX@CuxFNRw*vEyR.
-invalid1,bery.o+companynewstaging@sleekflow.io,test123
-instagram,bery.o+instagram@sleekflow.io,eDcGY64hF@.nvtJ*MLz2
+user,name,email,password
+invalid,Invalid,bery.o+stagingadmin@sleekflow.io,test123
+admin1,Bery Staging Admin,bery.o+stagingadmin@sleekflow.io,hpr0bpa_zjc.RKW8hnu
+staff1,Bery Staff,bery.o+stgstaff@sleekflow.io,tNmm637_fHgRhcuJYXH*
+admin2,Bery New Company,bery.o+companynewstaging@sleekflow.io,Lywjo*Ua7!!4fHce4AuU
+staff2,Bery Company Staff,bery.o+companynewstaff@sleekflow.io,Q9XvLX@CuxFNRw*vEyR.

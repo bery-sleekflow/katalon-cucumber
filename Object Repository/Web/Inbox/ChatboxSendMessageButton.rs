@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>TabPanelContactFirstItem</name>
+   <name>ChatboxSendMessageButton</name>
    <tag></tag>
-   <elementGuidId>a02f0114-accb-4d44-b8a7-6ebccff6c796</elementGuidId>
+   <elementGuidId>078de37f-5ecc-4b90-ac82-9b7f4cb21200</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//div[@id='tabpanel-contacts']//descendant::div[1]/li</value>
+         <value>//button[text()='Reply']/following::button[text()='Send']</value>
       </entry>
       <entry>
          <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
-   <smartLocatorCollection>
-      <entry>
-         <key>SMART_LOCATOR</key>
-         <value></value>
-      </entry>
-   </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
    <useRalativeImagePath>false</useRalativeImagePath>
 </WebElementEntity>

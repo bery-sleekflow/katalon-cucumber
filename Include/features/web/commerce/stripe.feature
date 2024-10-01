@@ -4,7 +4,7 @@ Feature: Commerce - Stripe
 
   Background: 
     Given I open Sleekflow "v2"
-    And I log in using "valid" credential
+    And I log in using "admin1" credential
 
   @p0
   Scenario: User able to generate Custom Payment Link

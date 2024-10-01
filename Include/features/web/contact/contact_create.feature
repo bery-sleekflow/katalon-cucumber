@@ -4,7 +4,7 @@ Feature: Create contact feature
 
   Background: 
     Given I open Sleekflow "v2"
-    And I log in using "valid" credential
+    And I log in using "admin1" credential
 
   @p0 @create
   Scenario Outline: Admin create contact with <case>
