@@ -47,17 +47,30 @@ import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.JavascriptExecutor
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
 
 
 
 class CommonStep {
+	//web
+	WebDriver driver
+	WebDriver driver1
+	WebDriver driver2
+
+	//api
+	ResponseObject response
+	RequestObject request
+	Map<String, Object> bodyFieldsToModify = [:]
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
-		WebDriver driver = new ChromeDriver()
+		driver = new ChromeDriver()
 		DriverFactory.changeWebDriver(driver)
-		
+
 		if (version == 'v2') {
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
@@ -96,6 +109,7 @@ class CommonStep {
 			WebUI.comment("User not found: " + user)
 			return
 		}
+		// login via web
 		try {
 			// input username
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/UsernameField'), 15)
@@ -111,6 +125,65 @@ class CommonStep {
 			}
 		} catch (Exception e) {
 			WebUI.comment("An error occurred during the login process: " + e.getMessage())
+		}
+
+		// Get token from local storage browser
+		String keyToRetrieve = GlobalVariable.v2ApiTokenSearch
+		JavascriptExecutor jsExecutor = (JavascriptExecutor) driver
+		String localStorageValue = jsExecutor.executeScript("""
+		    var items = {};
+		    for (var i = 0; i < localStorage.length; i++) {
+		        var key = localStorage.key(i);
+		        if (key.includes(arguments[0])) {
+		            items[key] = localStorage.getItem(key);
+		        }
+		    }
+		    return items[Object.keys(items)[0]];
+		""", keyToRetrieve)
+		if (localStorageValue != null && !localStorageValue.isEmpty()) {
+			// Parse the JSON string
+			def jsonSlurper = new JsonSlurper()
+			def jsonObject = jsonSlurper.parseText(localStorageValue)
+			// Save and Print token
+			if (jsonObject.body.access_token) {
+				GlobalVariable.bearerToken = jsonObject.body.access_token
+				println("Token: " + jsonObject.body.access_token)
+			} else {
+				println("Token field not found in JSON.")
+			}
+
+			// Access other fields as needed
+			println("Full JSON Data: " + jsonObject)
+		} else {
+			println("Local Storage Value for '" + keyToRetrieve + "': " + localStorageValue)
+		}
+	}
+
+	@Given("I open 2 browser and log in using {string} and {string}")
+	def loginMultiple(String user1, String user2) {
+		// login as user 1
+		System.setProperty("webdriver.chrome.driver", "/Applications/" + GlobalVariable.KatalonApp + "/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		driver1 = new ChromeDriver()  // Initialize driver1
+		if (driver1 != null) {
+			DriverFactory.changeWebDriver(driver1)
+			WebUI.navigateToUrl(GlobalVariable.v2_staging)
+			loginWeb(user1)
+			GlobalVariable.user1 = user1
+			GlobalVariable.webDriver1 = driver1
+		} else {
+			WebUI.comment("Failed to initialize driver1 for user: " + user1)
+		}
+
+		// login as user 2
+		driver2 = new ChromeDriver()  // Initialize driver2
+		if (driver2 != null) {
+			DriverFactory.changeWebDriver(driver2)
+			WebUI.navigateToUrl(GlobalVariable.v2_staging)
+			loginWeb(user2)
+			GlobalVariable.user2 = user2
+			GlobalVariable.webDriver2 = driver2
+		} else {
+			WebUI.comment("Failed to initialize driver2 for user: " + user2)
 		}
 	}
 
@@ -167,5 +240,89 @@ class CommonStep {
 		int randomNumber = rand.nextInt((max - min) + 1) + min
 
 		return randomNumber
+	}
+
+	@When("I call {string} to endpoint {string} with body {string}")
+	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {	
+		// validate request method
+		if (![
+					"POST",
+					"PUT",
+					"GET",
+					"DELETE"
+				].contains(method.toUpperCase())) {
+			println "API method is invalid"
+			return
+		}
+
+		// Create the RequestObject
+		def fullEndpoint = GlobalVariable.v2ApiBaseUrl + '/' + endpoint
+		request = new RequestObject()
+		request.setRestUrl(fullEndpoint)
+		request.setRestRequestMethod(method)
+
+		// Set Authorization header (Bearer Token)
+		request.setHttpHeaderProperties([
+			new TestObjectProperty("Authorization", com.kms.katalon.core.testobject.ConditionType.EQUALS, "Bearer " + GlobalVariable.bearerToken),
+			new TestObjectProperty("Content-Type", com.kms.katalon.core.testobject.ConditionType.EQUALS, "application/json")
+		])
+		
+		// Read body content from the JSON file
+		if (["POST", "PUT", "DELETE"].contains(method.toUpperCase()) && jsonFilePath != null) {
+	        // Modify JSON file content and get the updated request body
+	        String modifiedRequestBody = modifyBodyContentJsonFile(jsonFilePath, bodyFieldsToModify)
+	
+	        if (modifiedRequestBody != null) {
+	            request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
+	        } else {
+	            println "Failed to read or modify the body content from: " + jsonFilePath
+	            return
+	        }
+		}
+
+		// Send the request 
+		response = WS.sendRequest(request)
+		if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
+			println "Success for call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
+		}else {
+			println "Failed to call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
+		}
+		   
+		//println "Response body: " + response.getResponseBodyContent()
+	}
+	
+	// General function to modify body content from a JSON file
+	def modifyBodyContentJsonFile(String jsonFilePath, Map<String, Object> fieldsToModify) {
+	    try {
+	        File jsonFile = new File(jsonFilePath)
+	        
+	        if (!jsonFile.exists()) {
+	            println "JSON file not found at: " + jsonFilePath
+	            return null
+	        }
+	
+	        // Parse the JSON file
+	        def jsonSlurper = new JsonSlurper()
+	        def jsonContent = jsonSlurper.parseText(jsonFile.text)
+	        
+	        // Modify the specified fields in the JSON
+	        fieldsToModify.each { key, value ->
+	            jsonContent[key] = value
+	        }
+	
+	        // Convert the modified map back to a JSON string
+	        return JsonOutput.toJson(jsonContent)
+	    } catch (Exception e) {
+	        println "Error while modifying JSON content: " + e.message
+	        return null
+	    }
+	}
+
+	WebDriver getDriver1() {
+		return driver1
+	}
+
+	WebDriver getDriver2() {
+		return driver2
 	}
 }

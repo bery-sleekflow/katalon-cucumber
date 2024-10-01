@@ -1,10 +1,10 @@
 @authentication
-Feature: V2 - Authentication Feature
-  Login and Logout Feature using v2
+Feature: Authentication Feature
+  Login and Logout Feature
 
   Background: 
     Given I open Sleekflow "v2"
-	
+
 	@positive @p0
   Scenario: Login and logout using valid credential
     When I log in using "valid" credential

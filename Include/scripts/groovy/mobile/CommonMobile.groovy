@@ -69,11 +69,20 @@ class CommonMobile {
 		}
 		Mobile.startExistingApplication(appPackage, FailureHandling.STOP_ON_FAILURE)
 	}
-	
+
 	@When("I close all opened app in mobile")
 	def closeAllMobileApp(){
-		MobileDriverFactory.getDriver().executeScript("mobile: shell", ["command":"input", "args":["keyevent", "KEYCODE_APP_SWITCH"]])
-		MobileDriverFactory.getDriver().executeScript("mobile: shell", ["command":"input", "args":["swipe", "300", "1000", "300", "100"]])
+		MobileDriverFactory.getDriver().executeScript("mobile: shell", ["command":"input", "args":[
+				"keyevent",
+				"KEYCODE_APP_SWITCH"
+			]])
+		MobileDriverFactory.getDriver().executeScript("mobile: shell", ["command":"input", "args":[
+				"swipe",
+				"300",
+				"1000",
+				"300",
+				"100"
+			]])
 	}
 
 	@Then("I should see message in whatsapp app mobile from channel {string} is received")

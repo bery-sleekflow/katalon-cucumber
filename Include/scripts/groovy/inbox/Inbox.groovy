@@ -47,7 +47,25 @@ import cucumber.api.java.en.When
 
 class Inbox {
 	CommonStep commonStep = new CommonStep()
-
+	
+	@When("user {string} open conversation with {string} from {string} with group name {string}")
+	def openConversationUser(String user, String customerName, String location, String groupName) {
+		if (user == GlobalVariable.user1) {
+			if (GlobalVariable.webDriver1() != null) {
+			DriverFactory.changeWebDriver(GlobalVariable.webDriver1())  // Switch to driver1 for user1
+			} else {
+				WebUI.comment("driver1 is null, cannot switch to User 1's browser")
+			}
+		}else if (user == GlobalVariable.user2) {
+			if (GlobalVariable.webDriver2() != null) {
+				DriverFactory.changeWebDriver(GlobalVariable.webDriver2())  // Switch to driver2 for user2
+			} else {
+				WebUI.comment("driver2 is null, cannot switch to User 2's browser")
+			}
+		}
+		openConversation(customerName, location, groupName)
+	}
+	
 	@Given("I open conversation with {string} from {string} with group name {string}")
 	def openConversation(String name, String location, String groupName) {
 		// navigate to inbox page
@@ -70,6 +88,7 @@ class Inbox {
 		WebUI.setText(findTestObject("Object Repository/Web/Inbox/SearchInput"), name)
 		WebUI.click(findTestObject("Object Repository/Web/Inbox/TabPanelContactFirstItem"))
 	}
+	
 
 	@Then("I should see text {string} in textbox chat")
 	def verifyTextInTextbox(String expectedText) {
@@ -131,10 +150,12 @@ class Inbox {
 		} else {
 			testObject = 'Object Repository/Web/Inbox/ChooseTemplateChatButton'
 		}
-		if (WebUI.verifyElementPresent(findTestObject(testObject), 10, FailureHandling.OPTIONAL)) {
+		if (WebUI.verifyElementPresent(findTestObject(testObject), 2, FailureHandling.OPTIONAL)) {
 			WebUI.click(findTestObject(testObject))
 		} else {
 			println "Enter message button is not present."
 		}
 	}
+	
+	
 }

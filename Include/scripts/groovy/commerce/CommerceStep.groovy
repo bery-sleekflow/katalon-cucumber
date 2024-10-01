@@ -46,7 +46,7 @@ import inbox.Inbox
 
 
 
-class Commerce {
+class CommerceStep {
 	Inbox inbox = new Inbox()
 	CommonStep common = new CommonStep()
 

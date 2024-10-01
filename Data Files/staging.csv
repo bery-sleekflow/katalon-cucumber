@@ -1,6 +1,8 @@
 user,email,password
 valid,bery.o+stagingadmin@sleekflow.io,hpr0bpa_zjc.RKW8hnu
 invalid,bery.o+stagingadmin@sleekflow.io,test123
-valid1,bery.o+companynewstaging@sleekflow.io,Lywjo*Ua7!!4fHce4AuU
+staff1,bery.o+stgstaff@sleekflow.io,tNmm637_fHgRhcuJYXH*
+admin2,bery.o+companynewstaging@sleekflow.io,Lywjo*Ua7!!4fHce4AuU
+staff2,bery.o+companynewstaff@sleekflow.io,Q9XvLX@CuxFNRw*vEyR.
 invalid1,bery.o+companynewstaging@sleekflow.io,test123
 instagram,bery.o+instagram@sleekflow.io,eDcGY64hF@.nvtJ*MLz2

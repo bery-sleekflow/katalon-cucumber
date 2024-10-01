@@ -59,8 +59,9 @@ class ContactCreate {
 		WebUI.click(findTestObject('Object Repository/Web/Contact/ContactList/CreateNewContactButton'))
 		switch (condition) {
 			case "phone number only":
-				phoneNumber = '62856412' + commonStep.randomNumberGenerator(3).toString()
+				phoneNumber = '62856412'
 				WebUI.focus(findTestObject('Object Repository/Web/Contact/ContactForm/PhoneNumberInput'))
+				WebUI.delay(1)
 				WebUI.clearText(findTestObject('Object Repository/Web/Contact/ContactForm/PhoneNumberInput'))
 				WebUI.setText(findTestObject('Object Repository/Web/Contact/ContactForm/PhoneNumberInput'),phoneNumber)
 				break;
@@ -96,6 +97,11 @@ class ContactCreate {
 		searchContact(search)
 		String actualText = WebUI.getText(findTestObject('Object Repository/Web/Contact/ContactList/TableColumnName'))
 		assert actualText.contains(search) : "Expected contact to be part of the text, but it was not found."
+
+		// Get id for delete purpose
+		WebUI.click(findTestObject('Object Repository/Web/Contact/ContactList/TableColumnName'))
+		String url = WebUI.executeJavaScript("return window.location.href;", null)
+		GlobalVariable.userProfileId = url.split('/contacts/')[1].split('/')[0]
 	}
 
 	def searchContact(String input) {
@@ -103,9 +109,11 @@ class ContactCreate {
 		WebUI.sendKeys(findTestObject('Object Repository/Web/Contact/ContactList/SearchContactInput'), Keys.chord(Keys.ENTER))
 	}
 
-	@And("I delete the created contact")
-	def deleteContact(String searchInput) {
-		searchContact(searchInput)
-		WebUI.click(findTestObject('Object Repository/Web/Contact/ContactList/FirstTableColumnName'))
+	@And("I delete the created contact via api")
+	def deleteContactViaApi() {
+		commonStep.bodyFieldsToModify["userProfileIds"] = [GlobalVariable.userProfileId]
+		commonStep.callSleekflowApi("DELETE", "UserProfile", "Data Files/api json file/delete_contact_by_id.json")
+		assert commonStep.response.getStatusCode() == 200
+		
 	}
 }
