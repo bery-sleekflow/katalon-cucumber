@@ -69,13 +69,16 @@ class CommonStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		//System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
-		driver = new ChromeDriver()
-		DriverFactory.changeWebDriver(driver)
+		//driver = new ChromeDriver()
+		//DriverFactory.changeWebDriver(driver)
+		
 
 		if (version == 'v2') {
-			WebUI.navigateToUrl(GlobalVariable.v2_staging)
+			WebUI.openBrowser(GlobalVariable.v2_staging)
+			//WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
-			WebUI.navigateToUrl(GlobalVariable.v1_staging)
+			WebUI.openBrowser(GlobalVariable.v1_staging)
+			//WebUI.navigateToUrl(GlobalVariable.v1_staging)
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
