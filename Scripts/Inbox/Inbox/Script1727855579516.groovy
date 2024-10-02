@@ -1,3 +1,3 @@
 import com.kms.katalon.core.cucumber.keyword.CucumberBuiltinKeywords as CucumberKW
 
-CucumberKW.runFeatureFile('Include/features/web/contact/contact_create.feature')
+CucumberKW.runFeatureFile('Include/features/web/inbox/inbox.feature')
