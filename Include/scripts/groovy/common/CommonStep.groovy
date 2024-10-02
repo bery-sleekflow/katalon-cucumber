@@ -68,7 +68,7 @@ class CommonStep {
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
-		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		//System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
 		driver = new ChromeDriver()
 		DriverFactory.changeWebDriver(driver)
 
@@ -81,7 +81,7 @@ class CommonStep {
 		}
 		maximizeWindowBrowser()
 	}
-	
+
 	def maximizeWindowBrowser() {
 		// Maximize the window
 		WebUI.delay(2)
@@ -171,13 +171,13 @@ class CommonStep {
 	@Given("I open 2 browser and log in using {string} and {string}")
 	def loginMultiple(String user1, String user2) {
 		// login as user 1
-		System.setProperty("webdriver.chrome.driver", "/Applications/" + GlobalVariable.KatalonApp + "/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		//System.setProperty("webdriver.chrome.driver", "/Applications/" + GlobalVariable.KatalonApp + "/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
 		driver1 = new ChromeDriver()  // Initialize driver1
 		if (driver1 != null) {
 			DriverFactory.changeWebDriver(driver1)
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 			maximizeWindowBrowser()
-			loginInput(user1)			
+			loginInput(user1)
 			GlobalVariable.user1 = user1
 			GlobalVariable.webDriver1 = driver1
 		} else {
