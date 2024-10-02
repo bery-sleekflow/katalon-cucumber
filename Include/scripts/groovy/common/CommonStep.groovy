@@ -70,7 +70,7 @@ class CommonStep {
 	def openSleekflowWeb(String version) {
 		//System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
 		//driver = new ChromeDriver()
-		//DriverFactory.changeWebDriver(driver)
+		
 		
 
 		if (version == 'v2') {
@@ -82,6 +82,7 @@ class CommonStep {
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
+		driver = DriverFactory.getWebDriver()
 		maximizeWindowBrowser()
 	}
 
