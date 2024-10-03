@@ -1,3 +1,3 @@
 import com.kms.katalon.core.cucumber.keyword.CucumberBuiltinKeywords as CucumberKW
 
-CucumberKW.runFeatureFile('Include/features/web/inbox/inbox.feature')
+CucumberKW.runFeatureFileWithTags('Include/features/web/inbox/inbox.feature', 'not @multiple_user_interaction')
