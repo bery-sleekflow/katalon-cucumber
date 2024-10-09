@@ -69,8 +69,10 @@ class CommonStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
-		driver = new ChromeDriver()
-		DriverFactory.changeWebDriver(driver)
+		if (this.driver == null) {
+			driver = new ChromeDriver()
+			DriverFactory.changeWebDriver(driver)
+		}
 
 		if (version == 'v2') {
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
@@ -81,7 +83,7 @@ class CommonStep {
 		}
 		maximizeWindowBrowser()
 	}
-	
+
 	def maximizeWindowBrowser() {
 		// Maximize the window
 		WebUI.delay(2)
@@ -177,7 +179,7 @@ class CommonStep {
 			DriverFactory.changeWebDriver(driver1)
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 			maximizeWindowBrowser()
-			loginInput(user1)			
+			loginInput(user1)
 			GlobalVariable.user1 = user1
 			GlobalVariable.webDriver1 = driver1
 		} else {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Shared Step Login Feature</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>ae8b39b3-a72d-4f85-afaf-222aea0f1d48</testCaseGuid>
+</TestCaseEntity>

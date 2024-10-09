@@ -114,6 +114,5 @@ class ContactCreate {
 		commonStep.bodyFieldsToModify["userProfileIds"] = [GlobalVariable.userProfileId]
 		commonStep.callSleekflowApi("DELETE", "UserProfile", "Data Files/api json file/delete_contact_by_id.json")
 		assert commonStep.response.getStatusCode() == 200
-		
 	}
 }
