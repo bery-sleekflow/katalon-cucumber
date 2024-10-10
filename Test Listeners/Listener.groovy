@@ -27,7 +27,8 @@ import com.kms.katalon.core.configuration.RunConfiguration
 import com.kms.katalon.core.cucumber.keyword.CucumberBuiltinKeywords as CucumberKW
 import cucumber.api.CucumberOptions
 import cucumber.api.junit.Cucumber
-
+import cucumber.api.Scenario
+import common.CommonSharedStep
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.kms.katalon.core.util.KeywordUtil
@@ -40,6 +41,10 @@ import com.kms.katalon.core.util.KeywordUtil
  )*/
 
 class Listener {
+	
+	// Global flag to check if a suite is running
+	private static boolean isTestSuiteRunning = false
+	
 	/**
 	 * Add the GLUE option for Cucumber to locate the step definition files.
 	 * @param testCaseContext related information of the executed test case.
@@ -50,11 +55,10 @@ class Listener {
 	}
 
 	@AfterTestCase
-	def afterTestCase(TestCaseContext testCaseContext) {
+	def afterTestCase(TestCaseContext testCaseContext) {		
 		if (testCaseContext.getTestCaseStatus() == 'FAILED') {
 			String screenshotPath = ''
 			// Try to capture a screenshot for mobile first, if fail then capture web
-			//if (MobileDriverFactory.getDriver() != null) {
 				try {
 					screenshotPath = Mobile.takeScreenshot()
 					KeywordUtil.logInfo("Mobile screenshot captured: " + screenshotPath)
@@ -68,62 +72,57 @@ class Listener {
 						KeywordUtil.logInfo("Unable to capture web screenshot: " + ex.message)
 					}
 				}
-			//} else {
-				// If mobile driver is not available, attempt to capture a web screenshot directly
-				/*try {
-					screenshotPath = WebUI.takeScreenshot()
-					KeywordUtil.logInfo("Web screenshot captured: " + screenshotPath)
-				} catch (Exception ex) {
-					KeywordUtil.logInfo("Unable to capture web screenshot: " + ex.message)
-				}*/
-			//}
-
-
 		}
 
-		/*// Check if the mobile driver session is still active before closing the app
-		 try {
-		 if (MobileDriverFactory.getDriver() != null) {
-		 Mobile.closeApplication()
-		 }
-		 } catch (Exception e) {
-		 println("Failed to close the mobile application: " + e.message)
-		 }
-		 // Close the browser session
-		 try {
-		 WebUI.closeBrowser()
-		 } catch (Exception e) {
-		 println("Failed to close the browser: " + e.message)
-		 }*/
-	}
-
-	@AfterTestSuite
-	def afterTestSuite(TestSuiteContext testSuiteContext) {
+		// Only close the browser and app if we are NOT running a test suite
 		try {
-			// Log the completion of the test suite
-			KeywordUtil.logInfo("Test Suite has completed.")
-
-			try {
-				if (MobileDriverFactory.getDriver() != null) {
-					Mobile.closeApplication()
-				}
-				KeywordUtil.logInfo("Mobile application closed successfully.")
-			} catch (Exception e) {
-				KeywordUtil.logInfo("No mobile application was open or an error occurred while closing the application: " + e.message)
+			if (!isTestSuiteRunning) {
+				closeResources("test case")
 			}
+		} catch (Exception e) {
+			KeywordUtil.markFailed("Exception occurred in afterTestCase: " + e.message)
+		}
+	}
+	
+	// Method to close mobile app and web browser
+	private void closeResources(String trigger) {
+		// Close the mobile app if it was running
+		if (MobileDriverFactory.getDriver() != null) {
+			try {
+				Mobile.closeApplication()
+				KeywordUtil.logInfo("Mobile application closed successfully after " + trigger + ".")
+			} catch (Exception e) {
+				KeywordUtil.logInfo("No mobile application was open or an error occurred while closing the mobile app: " + e.message)
+			}
+		}
 
-
+		// Close the web browser if it was running
+		if (DriverFactory.getWebDriver() != null) {
 			try {
 				WebUI.closeBrowser()
-				KeywordUtil.logInfo("Browser closed successfully.")
+				KeywordUtil.logInfo("Browser closed successfully after " + trigger + ".")
 			} catch (Exception e) {
 				KeywordUtil.logInfo("No web browser was open or an error occurred while closing the browser: " + e.message)
 			}
-
-
-
+		}
+	}
+	
+	// Set the flag to true when a test suite starts
+	@BeforeTestSuite
+	def beforeTestSuite(TestSuiteContext testSuiteContext) {
+		isTestSuiteRunning = true
+		KeywordUtil.logInfo("Test suite started: " + testSuiteContext.getTestSuiteId())
+	}
+	
+	@AfterTestSuite
+	def afterTestSuite(TestSuiteContext testSuiteContext) {
+		try {
+			closeResources("test suite")
 		} catch (Exception e) {
 			KeywordUtil.markFailed("Exception occurred in afterTestSuite: " + e.message)
+		} finally {
+			// Reset the flag after the suite completes
+			isTestSuiteRunning = false
 		}
 	}
 

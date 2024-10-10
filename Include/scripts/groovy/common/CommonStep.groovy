@@ -4,7 +4,6 @@ import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
 import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
-
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.checkpoint.Checkpoint
 import com.kms.katalon.core.checkpoint.CheckpointFactory
@@ -60,6 +59,7 @@ class CommonStep {
 	WebDriver driver1
 	WebDriver driver2
 	def credential
+	def mfaReader = new readMFA()
 
 	//api
 	ResponseObject response
@@ -69,8 +69,10 @@ class CommonStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
-		driver = new ChromeDriver()
-		DriverFactory.changeWebDriver(driver)
+		if (this.driver == null) {
+			driver = new ChromeDriver()
+			DriverFactory.changeWebDriver(driver)
+		}
 
 		if (version == 'v2') {
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
@@ -81,7 +83,7 @@ class CommonStep {
 		}
 		maximizeWindowBrowser()
 	}
-	
+
 	def maximizeWindowBrowser() {
 		// Maximize the window
 		WebUI.delay(2)
@@ -123,6 +125,14 @@ class CommonStep {
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/PasswordField'), 15)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/SignInButton'))
+
+			//input OTP if enabled
+			if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 15)){
+				String totpCode = mfaReader.GetMFAToken(credential.otpsecret)
+				WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
+				WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
+			}
+			
 			WebUI.waitForPageLoad(15)
 			if(WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.baseUrl + '.*', true)) {
 				continueExcedeedDeviceLimit()
@@ -177,7 +187,7 @@ class CommonStep {
 			DriverFactory.changeWebDriver(driver1)
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 			maximizeWindowBrowser()
-			loginInput(user1)			
+			loginInput(user1)
 			GlobalVariable.user1 = user1
 			GlobalVariable.webDriver1 = driver1
 		} else {
@@ -264,7 +274,7 @@ class CommonStep {
 		CSVData data = TestDataFactory.findTestData('Data Files/staging_login')
 		for (def row = 1; row <= data.getRowNumbers(); row++) {
 			if (data.getValue('user', row) == user) {
-				return [name: data.getValue('name', row), email: data.getValue('email', row), password: data.getValue('password', row)]
+				return [name: data.getValue('name', row), email: data.getValue('email', row), password: data.getValue('password', row), otpsecret: data.getValue('otpsecret', row)]
 			}
 		}
 		return null

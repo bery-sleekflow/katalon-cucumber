@@ -131,26 +131,26 @@ class Inbox {
 	def verifyMessageSent(String type, String target) {
 		// Waiting for message to be sent
 		WebUI.delay(2)
-	
+
 		String dynamicXpath = getDynamicXpath(type, target)
 		String expectedMessage = (target == 'customer') ? GlobalVariable.messageSentToCustomer : messageToInternal
-	
+
 		// Validate for both customer and internal messages
 		validateMessage(dynamicXpath, expectedMessage)
-	
+
 		// Special validation for internal notes if target is internal
 		if (target == 'internal') {
 			validateMessage('/descendant::p[2]', "Internal note")
 		}
 	}
-	
+
 	@Then("user {string} should see the {string} from user {string}")
 	def verifyMessageSentByUser(String user1, String type, String user2) {
 		commonStep.changeWebDriver(user1)
 		def credential = commonStep.searchUser(user2)
 		// Waiting for message to be sent
 		WebUI.delay(2)
-	
+
 		if (type == 'message') {
 			// Validate the internal message sequence and the sender's name
 			validateMessage('/descendant::p[1]', messageToInternal)
@@ -158,7 +158,7 @@ class Inbox {
 			validateMessage('/descendant::p[3]', credential.name)
 		}
 	}
-	
+
 	// General function to fetch the correct XPath based on type and target
 	private String getDynamicXpath(String type, String target) {
 		if (target == 'customer') {
@@ -168,7 +168,7 @@ class Inbox {
 		}
 		return null
 	}
-	
+
 	// General validation function for message content
 	private void validateMessage(String xpath, String expectedMessage) {
 		Map<String, String> params = [

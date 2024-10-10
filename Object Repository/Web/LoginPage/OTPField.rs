@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>ContinueExceedLimitButton</name>
+   <name>OTPField</name>
    <tag></tag>
-   <elementGuidId>9568e6d6-3619-40a8-8709-e7eca0089561</elementGuidId>
+   <elementGuidId>f8a3a88a-a4f6-4e31-9da5-b0a22e2bce1b</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//h2[text()='Exceeded device limit']/following::button[text()='Continue here']</value>
+         <key>CSS</key>
+         <value>#code</value>
       </entry>
    </selectorCollection>
-   <selectorMethod>XPATH</selectorMethod>
+   <selectorMethod>CSS</selectorMethod>
    <smartLocatorEnabled>false</smartLocatorEnabled>
    <useRalativeImagePath>false</useRalativeImagePath>
 </WebElementEntity>
