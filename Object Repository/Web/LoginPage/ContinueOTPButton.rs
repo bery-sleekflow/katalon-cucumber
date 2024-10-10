@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>ContinueExceedLimitButton</name>
+   <name>ContinueOTPButton</name>
    <tag></tag>
-   <elementGuidId>9568e6d6-3619-40a8-8709-e7eca0089561</elementGuidId>
+   <elementGuidId>6c447c59-d2fe-4205-97b7-813d0017c996</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>//h2[text()='Exceeded device limit']/following::button[text()='Continue here']</value>
+         <value>//button[@type='submit'][contains(text(),'Continue')]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
