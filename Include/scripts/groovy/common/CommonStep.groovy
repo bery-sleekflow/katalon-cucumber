@@ -59,7 +59,6 @@ class CommonStep {
 	WebDriver driver1
 	WebDriver driver2
 	def credential
-	def mfaReader = new readMFA()
 
 	//api
 	ResponseObject response
@@ -110,17 +109,18 @@ class CommonStep {
 
 	def loginInput(String user) {
 		// check user from data files
-		credential = searchUser(user)
+		credential = CustomKeywords.'ReadUserData.getUserLoginData'(user)
 		if (credential == null) {
 			WebUI.comment("User not found: " + user)
 			return
 		}
-		// login via web
+		// login process
 		try {
 			// input username
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/UsernameField'), 15)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/UsernameField'), credential.email)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueSignInButton'))
+
 			// input password
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/PasswordField'), 15)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
@@ -128,15 +128,15 @@ class CommonStep {
 
 			//input OTP if enabled
 			if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 15)){
-				String totpCode = mfaReader.GetMFAToken(credential.otpsecret)
+				String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
 				WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
 				WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
 			}
-			
+
 			WebUI.waitForPageLoad(15)
-			if(WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.baseUrl + '.*', true)) {
-				continueExcedeedDeviceLimit()
-			}
+			// check exceed device limit and refresh page popup
+			continueExcedeedDeviceLimit()
+			dismissRefreshPopup()
 		} catch (Exception e) {
 			WebUI.comment("An error occurred during the login process: " + e.getMessage())
 		}
@@ -269,26 +269,14 @@ class CommonStep {
 		}
 	}
 
-	// search user from CSV
-	def searchUser(String user) {
-		CSVData data = TestDataFactory.findTestData('Data Files/staging_login')
-		for (def row = 1; row <= data.getRowNumbers(); row++) {
-			if (data.getValue('user', row) == user) {
-				return [name: data.getValue('name', row), email: data.getValue('email', row), password: data.getValue('password', row), otpsecret: data.getValue('otpsecret', row)]
-			}
+	// dismiss refresh toast popup
+	def dismissRefreshPopup() {
+		WebUI.delay(5)
+		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 10, FailureHandling.OPTIONAL)) {
+			WebUI.click(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'))
+		} else {
+			println "Refresh toast popup is not present."
 		}
-		return null
-	}
-
-	// Generate a random number with a specified number of digits
-	def randomNumberGenerator(int numberOfDigits) {
-		int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
-		int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
-
-		Random rand = new Random()
-		int randomNumber = rand.nextInt((max - min) + 1) + min
-
-		return randomNumber
 	}
 
 	@When("I call {string} to endpoint {string} with body {string}")

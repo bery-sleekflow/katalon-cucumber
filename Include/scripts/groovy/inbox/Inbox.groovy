@@ -18,6 +18,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
+import CustomKeywords
 import common.CommonStep
 import internal.GlobalVariable
 
@@ -92,7 +93,7 @@ class Inbox {
 		replyButtonChecker('enter message')
 		//  adding unique number for identifier
 		if (message == 'Message from QA Automation') {
-			message = message + commonStep.randomNumberGenerator(4)
+			message = message + CustomKeywords.'RandomGenerator.randomNumberGenerator'(4)
 		}
 		GlobalVariable.messageSentToCustomer = message
 		// enter message and send to customer
@@ -106,7 +107,7 @@ class Inbox {
 		// click internal note button
 		WebUI.click(findTestObject('Object Repository/Web/Inbox/ChatboxInternalnotButton'))
 		// adding unique number for identifier
-		message = message + commonStep.randomNumberGenerator(4)
+		message = message + CustomKeywords.'RandomGenerator.randomNumberGenerator'(4)
 		messageToInternal = message
 		// enter message and send to internal note
 		WebUI.setText(findTestObject('Object Repository/Web/Inbox/ChatboxTextArea'), message)
@@ -147,7 +148,7 @@ class Inbox {
 	@Then("user {string} should see the {string} from user {string}")
 	def verifyMessageSentByUser(String user1, String type, String user2) {
 		commonStep.changeWebDriver(user1)
-		def credential = commonStep.searchUser(user2)
+		def credential = CustomKeywords.'ReadUserData.getUserLoginData'(user2)
 		// Waiting for message to be sent
 		WebUI.delay(2)
 

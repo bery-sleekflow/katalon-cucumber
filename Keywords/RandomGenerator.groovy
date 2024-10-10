@@ -17,13 +17,17 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 
 import internal.GlobalVariable
-import org.jboss.aerogear.security.otp.Totp
 
-public class readMFA {
-
+public class RandomGenerator {
+	// Generate a random number with a specified number of digits
 	@Keyword
-	def GetMFAToken(token){
-		Totp totp = new Totp(token)
-		return totp.now()
+	def randomNumberGenerator(int numberOfDigits) {
+		int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
+		int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
+
+		Random rand = new Random()
+		int randomNumber = rand.nextInt((max - min) + 1) + min
+
+		return randomNumber
 	}
 }
