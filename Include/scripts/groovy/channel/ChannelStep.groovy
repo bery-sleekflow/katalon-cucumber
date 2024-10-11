@@ -95,6 +95,14 @@ class ChannelStep {
 				commonApi.bodyFieldsToModify["channelName"] = originalChannelName
 				commonApi.callSleekflowApi("PUT", "company/whatsapp/360dialog/" + result.id , "Data Files/api json file/rename_channel.json")
 				break;
+			case 'Telegram':
+				commonApi.fieldsToRemove = ["name"]
+				commonApi.bodyFieldsToModify = [
+				    "telegramChannelId": result.id,
+				    "displayName": originalChannelName
+				]
+				commonApi.callSleekflowApi("PUT", "Company/telegram", "Data Files/api json file/rename_channel.json")
+				break;
 		}
 		
 		assert commonApi.response.getStatusCode() == 200

@@ -14,4 +14,5 @@ Feature: Channel Feature
       | channel  						| name1 										| name2    					 											|
       | Facebook Messenger 	| SF V2 Second Testing Page | Fb messenger from automated regression 	|
       | WhatsApp 360dialog 	| 360 dialog 								| 360 from automated regression 					|
+      | Telegram				  	| Joe Telegram							| Joe Telegram from automated regression 	|
       

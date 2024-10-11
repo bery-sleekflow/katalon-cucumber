@@ -13,6 +13,12 @@
                 "id": "3"
             }
         ],
+        "Telegram": [
+            {
+                "name":"Joe Telegram",
+                "id": "30024"
+            }
+        ],
         "Facebook Messenger": [
             {
                 "name":"SF V2 Second Testing Page",
