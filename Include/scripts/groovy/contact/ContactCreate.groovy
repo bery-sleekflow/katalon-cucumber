@@ -18,7 +18,8 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
-import common.CommonStep
+import common.CommonWebStep
+import common.CommonApiStep
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -47,7 +48,8 @@ import cucumber.api.java.en.When
 
 
 class ContactCreate {
-	CommonStep commonStep = new CommonStep()
+	CommonWebStep commonStep = new CommonWebStep()
+	CommonApiStep commonApi = new CommonApiStep()
 	String phoneNumber = ''
 	String email = ''
 
@@ -111,8 +113,8 @@ class ContactCreate {
 
 	@And("I delete the created contact via api")
 	def deleteContactViaApi() {
-		commonStep.bodyFieldsToModify["userProfileIds"] = [GlobalVariable.userProfileId]
-		commonStep.callSleekflowApi("DELETE", "UserProfile", "Data Files/api json file/delete_contact_by_id.json")
-		assert commonStep.response.getStatusCode() == 200
+		commonApi.bodyFieldsToModify["userProfileIds"] = [GlobalVariable.userProfileId]
+		commonApi.callSleekflowApi("DELETE", "UserProfile", "Data Files/api json file/delete_contact_by_id.json")
+		assert commonApi.response.getStatusCode() == 200
 	}
 }

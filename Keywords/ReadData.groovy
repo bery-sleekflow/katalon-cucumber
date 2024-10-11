@@ -19,11 +19,11 @@ import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 
 import internal.GlobalVariable
 
-public class ReadUserData {
+public class ReadData {
 	@Keyword
 	def getUserLoginData(String username) {
 		// Define the path to the JSON file
-		String jsonFilePath = "Data Files/user.json"
+		String jsonFilePath = "Data Files/api json file/user.json"
 
 		// Load and parse the JSON file
 		def jsonSlurper = new JsonSlurper()
@@ -39,5 +39,32 @@ public class ReadUserData {
 
 		// Return the user object
 		return user
+	}
+
+	@Keyword
+	def getChannelData(String channelCategory, String name) {
+		def result
+		// Define the path to the JSON file
+		String jsonFilePath = "Data Files/api json file/channel_list.json"
+
+		// Load and parse the JSON file
+		def jsonSlurper = new JsonSlurper()
+		def jsonFile = new File(jsonFilePath)
+		def parsedJson = jsonSlurper.parse(jsonFile)
+
+		// Access the channelCategory dynamically
+		def channels = parsedJson.channels[channelCategory]
+		if (channels == null) {
+			throw new Exception("Channel category " + channelCategory + " is not found")
+		}
+
+		// Find the specific channel by name
+		result = channels.find { it.name == name }
+		if (result == null) {
+			throw new Exception("Channel " + channelCategory + " with name " + name + " is not found")
+		}
+
+		// Return the channel object
+		return result
 	}
 }

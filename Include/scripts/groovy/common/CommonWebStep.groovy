@@ -27,7 +27,6 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
 
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
-import com.kms.katalon.core.webui.common.WebUiCommonHelper
 import com.kms.katalon.core.webui.driver.DriverFactory
 
 import com.kms.katalon.core.testobject.RequestObject
@@ -49,21 +48,15 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.JavascriptExecutor
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
+import CustomKeywords
 
 
-
-class CommonStep {
+class CommonWebStep {
 	//web
 	WebDriver driver
 	WebDriver driver1
 	WebDriver driver2
 	def credential
-
-	//api
-	ResponseObject response
-	RequestObject request
-	Map<String, Object> bodyFieldsToModify = [:]
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
@@ -109,7 +102,7 @@ class CommonStep {
 
 	def loginInput(String user) {
 		// check user from data files
-		credential = CustomKeywords.'ReadUserData.getUserLoginData'(user)
+		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
 		if (credential == null) {
 			WebUI.comment("User not found: " + user)
 			return
@@ -126,13 +119,8 @@ class CommonStep {
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/SignInButton'))
 
-			//input OTP if enabled
-			if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 15)){
-				String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
-				WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
-				WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
-			}
-
+			// input if otp is enabled
+			inputOTP()
 			WebUI.waitForPageLoad(15)
 			// check exceed device limit and refresh page popup
 			continueExcedeedDeviceLimit()
@@ -253,16 +241,10 @@ class CommonStep {
 		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SignOutButton'))
 	}
 
-	def static clearElementText(TestObject to) {
-		WebElement element = WebUiCommonHelper.findWebElement(to,30)
-		WebUI.executeJavaScript("arguments[0].value=''", Arrays.asList(element))
-		WebUI.delay(2)
-	}
-
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
-		WebUI.delay(10)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
+		WebUI.waitForElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 5, FailureHandling.OPTIONAL)
+		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 5, FailureHandling.OPTIONAL)) {
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
 		} else {
 			println "Continue button is not present."
@@ -271,87 +253,23 @@ class CommonStep {
 
 	// dismiss refresh toast popup
 	def dismissRefreshPopup() {
-		WebUI.delay(5)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 10, FailureHandling.OPTIONAL)) {
+		WebUI.waitForElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 5, FailureHandling.OPTIONAL)
+		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 5, FailureHandling.OPTIONAL)) {
 			WebUI.click(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'))
 		} else {
 			println "Refresh toast popup is not present."
 		}
 	}
 
-	@When("I call {string} to endpoint {string} with body {string}")
-	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {
-		// validate request method
-		if (![
-					"POST",
-					"PUT",
-					"GET",
-					"DELETE"
-				].contains(method.toUpperCase())) {
-			println "API method is invalid"
-			return
-		}
-
-		// Create the RequestObject
-		def fullEndpoint = GlobalVariable.v2ApiBaseUrl + '/' + endpoint
-		request = new RequestObject()
-		request.setRestUrl(fullEndpoint)
-		request.setRestRequestMethod(method)
-
-		// Set Authorization header (Bearer Token)
-		request.setHttpHeaderProperties([
-			new TestObjectProperty("Authorization", com.kms.katalon.core.testobject.ConditionType.EQUALS, "Bearer " + GlobalVariable.bearerToken),
-			new TestObjectProperty("Content-Type", com.kms.katalon.core.testobject.ConditionType.EQUALS, "application/json")
-		])
-
-		// Read body content from the JSON file
-		if (["POST", "PUT", "DELETE"].contains(method.toUpperCase()) && jsonFilePath != null) {
-			// Modify JSON file content and get the updated request body
-			String modifiedRequestBody = modifyBodyContentJsonFile(jsonFilePath, bodyFieldsToModify)
-
-			if (modifiedRequestBody != null) {
-				request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
-			} else {
-				println "Failed to read or modify the body content from: " + jsonFilePath
-				return
-			}
-		}
-
-		// Send the request
-		response = WS.sendRequest(request)
-		if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
-			println "Success for call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
-		}else {
-			println "Failed to call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
-		}
-
-		//println "Response body: " + response.getResponseBodyContent()
-	}
-
-	// General function to modify body content from a JSON file
-	def modifyBodyContentJsonFile(String jsonFilePath, Map<String, Object> fieldsToModify) {
-		try {
-			File jsonFile = new File(jsonFilePath)
-
-			if (!jsonFile.exists()) {
-				println "JSON file not found at: " + jsonFilePath
-				return null
-			}
-
-			// Parse the JSON file
-			def jsonSlurper = new JsonSlurper()
-			def jsonContent = jsonSlurper.parseText(jsonFile.text)
-
-			// Modify the specified fields in the JSON
-			fieldsToModify.each { key, value ->
-				jsonContent[key] = value
-			}
-
-			// Convert the modified map back to a JSON string
-			return JsonOutput.toJson(jsonContent)
-		} catch (Exception e) {
-			println "Error while modifying JSON content: " + e.message
-			return null
+	// input otp if otp login is active
+	def inputOTP() {
+		WebUI.waitForElementVisible(findTestObject('Object Repository/Web/LoginPage/OTPField'), 5, FailureHandling.OPTIONAL)
+		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 5, FailureHandling.OPTIONAL)) {
+			String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
+			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
+		} else {
+			WebUI.comment("OTP field is not present. Continuing without OTP.")
 		}
 	}
 

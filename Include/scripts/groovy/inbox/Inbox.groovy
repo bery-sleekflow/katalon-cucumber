@@ -19,7 +19,7 @@ import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
 import CustomKeywords
-import common.CommonStep
+import common.CommonWebStep
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -47,7 +47,7 @@ import cucumber.api.java.en.When
 
 
 class Inbox {
-	CommonStep commonStep = new CommonStep()
+	CommonWebStep commonStep = new CommonWebStep()
 	String messageToInternal
 
 	@Given("I open conversation with {string} from {string} with group name {string}")
@@ -148,7 +148,7 @@ class Inbox {
 	@Then("user {string} should see the {string} from user {string}")
 	def verifyMessageSentByUser(String user1, String type, String user2) {
 		commonStep.changeWebDriver(user1)
-		def credential = CustomKeywords.'ReadUserData.getUserLoginData'(user2)
+		def credential = CustomKeywords.'ReadData.getUserLoginData'(user2)
 		// Waiting for message to be sent
 		WebUI.delay(2)
 

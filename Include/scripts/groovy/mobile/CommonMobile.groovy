@@ -18,7 +18,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
-import common.CommonStep
+import common.CommonWebStep
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -50,13 +50,13 @@ import cucumber.api.java.en.When
 
 
 class CommonMobile {
-	CommonStep common = new CommonStep()
+	CommonWebStep common = new CommonWebStep()
 	def credential
 
 	@When("I log in using mobile {string} credential")
 	def loginSleekflowMobile(String user) {
 		// check user from data files
-		credential = CustomKeywords.'ReadUserData.getUserLoginData'(user)
+		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
 		if (credential == null) {
 			Mobile.comment("User not found: " + user)
 			return
