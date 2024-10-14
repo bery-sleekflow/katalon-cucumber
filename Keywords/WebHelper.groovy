@@ -39,7 +39,6 @@ import com.kms.katalon.core.webui.exception.WebElementNotFoundException
 
 
 class WebHelper {
-
 	// Refresh browser
 	@Keyword
 	def refreshBrowser() {

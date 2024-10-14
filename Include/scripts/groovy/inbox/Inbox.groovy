@@ -18,7 +18,6 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
-import CustomKeywords
 import common.CommonWebStep
 import internal.GlobalVariable
 
@@ -48,7 +47,7 @@ import cucumber.api.java.en.When
 
 class Inbox {
 	CommonWebStep commonStep = new CommonWebStep()
-	String messageToInternal
+	String messageToInternal, searchCategory, searchValue
 
 	@Given("I open conversation with {string} from {string} with group name {string}")
 	def openConversation(String name, String location, String groupName) {
@@ -67,10 +66,22 @@ class Inbox {
 		// Click the conversation group
 		TestObject dynamicObject = findTestObject("Object Repository/Web/Inbox/SubMenuInbox", params)
 		WebUI.click(dynamicObject)
-
+		
+		// Change filter status to "All"
+		filterConversation("All")
+		
 		// search & click specific contact in inbox
 		WebUI.setText(findTestObject("Object Repository/Web/Inbox/SearchInput"), name)
-		WebUI.click(findTestObject("Object Repository/Web/Inbox/TabPanelContactFirstItem"))
+		TestObject result = findTestObject("Object Repository/Web/Inbox/SearchResultListContact", [('sequence') : 1])
+		WebUI.waitForElementVisible(result, 5)
+		boolean isVisible = WebUI.verifyElementVisible(result, FailureHandling.OPTIONAL)
+		if(isVisible) {
+			WebUI.click(result)
+		} else {
+			WebUI.click(findTestObject("Object Repository/Web/Inbox/SectionMessageButton"))
+			WebUI.click(findTestObject("Object Repository/Web/Inbox/SearchResultListMessage", [('sequence') : 1]))
+		}
+		
 	}
 
 
@@ -78,6 +89,44 @@ class Inbox {
 	def openConversationByUser(String user, String customerName, String location, String groupName) {
 		commonStep.changeWebDriver(user)
 		openConversation(customerName, location, groupName)
+	}
+
+	@When("I search conversation by {string} contains {string} from {string} with group name {string}")
+	def searchConversation(String searchBy, String searchTerm, String location, String groupName) {
+		searchCategory = searchBy
+		searchValue = searchTerm
+		openConversation(searchTerm, location, groupName)
+	}
+
+	@When("I change the filter inbox status to {string}")
+	def filterConversation(String status) {
+		WebUI.click(findTestObject("Object Repository/Web/Inbox/FilterStatus"))
+		WebUI.click(findTestObject("Object Repository/Web/Inbox/FilterStatusOption", [('status') : status]))
+	}
+
+	@Then("I should see the {string} is displayed in the {string}")
+	def verifySearch(String filter, String list) {
+		// click section people or message
+		if (list == 'message') {
+			WebUI.click(findTestObject("Object Repository/Web/Inbox/SectionMessageButton"))
+		}else {
+			WebUI.click(findTestObject("Object Repository/Web/Inbox/SectionPeopleButton"))
+		}
+				
+		// assertion for verify search result
+		switch(filter) {
+			case 'phone number': 				
+				String inputValue = WebUI.getAttribute(findTestObject("Object Repository/Web/Inbox/SidePanel/ContactPhoneNumberOrEmail", [('sequence') : 1]), 'value').replaceAll("\\s", "")
+				assert inputValue.contains(searchValue) 
+				break;
+			case 'name':
+				String inputValue = WebUI.getText(findTestObject("Object Repository/Web/Inbox/SidePanel/ContactName")).toLowerCase()
+				assert inputValue.contains(searchValue) 
+				break;
+			case 'message content':
+				WebUI.verifyElementVisible(findTestObject("Object Repository/Web/Inbox/SearchResultContentMessage", [('content') : searchValue]))
+				break;
+		}
 	}
 
 	@Then("I should see text {string} in textbox chat")
