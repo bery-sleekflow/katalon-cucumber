@@ -18,6 +18,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
+import CustomKeywords
 import common.CommonWebStep
 import internal.GlobalVariable
 
@@ -73,10 +74,5 @@ class CommerceStep {
 			WebUI.focus(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]))
 			WebUI.setText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]), '1500')
 		}
-	}
-
-	@Then("I verify the (.*) in step")
-	def I_verify_the_status_in_step(String status) {
-		println status
 	}
 }

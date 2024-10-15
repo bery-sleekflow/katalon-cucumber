@@ -18,6 +18,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
+import CustomKeywords
 import common.CommonWebStep
 import common.CommonApiStep
 import internal.GlobalVariable
@@ -68,7 +69,7 @@ class ContactCreate {
 				WebUI.setText(findTestObject('Object Repository/Web/Contact/ContactForm/PhoneNumberInput'),phoneNumber)
 				break;
 			case "email only":
-				email = 'automation.test+' + commonStep.randomNumberGenerator(4).toString() + '@mail.com'
+				email = 'automation.test+' + CustomKeywords.'RandomGenerator.randomNumberGenerator'(4).toString() + '@mail.com'
 				WebUI.focus(findTestObject('Object Repository/Web/Contact/ContactForm/EmailInput'))
 				WebUI.clearText(findTestObject('Object Repository/Web/Contact/ContactForm/EmailInput'))
 				WebUI.setText(findTestObject('Object Repository/Web/Contact/ContactForm/EmailInput'),email)
