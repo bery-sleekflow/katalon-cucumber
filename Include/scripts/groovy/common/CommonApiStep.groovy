@@ -52,7 +52,7 @@ class CommonApiStep {
 	RequestObject request
 	Map<String, Object> bodyFieldsToModify = [:]
 	List<String> fieldsToRemove = null
-	
+
 	@When("I call {string} to endpoint {string} with body {string}")
 	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {
 		// validate request method
@@ -82,7 +82,7 @@ class CommonApiStep {
 		if (["POST", "PUT", "DELETE"].contains(method.toUpperCase()) && jsonFilePath != null) {
 			// Modify JSON file content and get the updated request body
 			String modifiedRequestBody = modifyOrRemoveBodyField(jsonFilePath, bodyFieldsToModify, fieldsToRemove)
-			
+
 			if (modifiedRequestBody != null) {
 				request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
 			} else {
@@ -99,45 +99,43 @@ class CommonApiStep {
 		}else {
 			KeywordUtil.logInfo("Failed to call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode())
 		}
-		
-		
 	}
-	
+
 	// General function to modify or remove fields from a JSON file content
 	def modifyOrRemoveBodyField(String jsonFilePath, Map<String, Object> fieldsToModify, List<String> fieldsToRemove = null) {
-	    try {
-	        File jsonFile = new File(jsonFilePath)
-	
-	        if (!jsonFile.exists()) {
-	            println "JSON file not found at: " + jsonFilePath
-	            return null
-	        }
-	
-	        // Parse the JSON file
-	        def jsonSlurper = new JsonSlurper()
-	        def jsonContent = jsonSlurper.parseText(jsonFile.text)
-	
-	        // Modify the specified fields in the JSON
-	        fieldsToModify.each { key, value ->
-	            jsonContent[key] = value
-	        }
-	
-	        // Remove the specified fields from the JSON if fieldsToRemove is not null and contains values
-	        if (fieldsToRemove != null) {
-	            fieldsToRemove.each { fieldName ->
-	                if (jsonContent.containsKey(fieldName)) {
-	                    jsonContent.remove(fieldName)
-	                } else {
-	                    println "Field '${fieldName}' not found in the JSON content."
-	                }
-	            }
-	        }
-	
-	        // Convert the modified map back to a JSON string
-	        return JsonOutput.toJson(jsonContent)
-	    } catch (Exception e) {
-	        println "Error while modifying/removing JSON content: " + e.message
-	        return null
-	    }
+		try {
+			File jsonFile = new File(jsonFilePath)
+
+			if (!jsonFile.exists()) {
+				println "JSON file not found at: " + jsonFilePath
+				return null
+			}
+
+			// Parse the JSON file
+			def jsonSlurper = new JsonSlurper()
+			def jsonContent = jsonSlurper.parseText(jsonFile.text)
+
+			// Modify the specified fields in the JSON
+			fieldsToModify.each { key, value ->
+				jsonContent[key] = value
+			}
+
+			// Remove the specified fields from the JSON if fieldsToRemove is not null and contains values
+			if (fieldsToRemove != null) {
+				fieldsToRemove.each { fieldName ->
+					if (jsonContent.containsKey(fieldName)) {
+						jsonContent.remove(fieldName)
+					} else {
+						println "Field '${fieldName}' not found in the JSON content."
+					}
+				}
+			}
+
+			// Convert the modified map back to a JSON string
+			return JsonOutput.toJson(jsonContent)
+		} catch (Exception e) {
+			println "Error while modifying/removing JSON content: " + e.message
+			return null
+		}
 	}
 }

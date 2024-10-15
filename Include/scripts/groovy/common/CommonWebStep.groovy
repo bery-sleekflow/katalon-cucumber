@@ -19,6 +19,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.testdata.CSVData
+import com.kms.katalon.core.exception.StepFailedException
 
 import internal.GlobalVariable
 
@@ -53,9 +54,8 @@ import CustomKeywords
 
 class CommonWebStep {
 	//web
-	WebDriver driver
-	WebDriver driver1
-	WebDriver driver2
+	WebDriver driver = null
+	WebDriver driver1, driver2
 	def credential
 
 	@Given("I open Sleekflow {string}")
@@ -65,7 +65,6 @@ class CommonWebStep {
 			driver = new ChromeDriver()
 			DriverFactory.changeWebDriver(driver)
 		}
-
 		if (version == 'v2') {
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
@@ -131,7 +130,7 @@ class CommonWebStep {
 	}
 
 	@When("I log in using {string} credential")
-	def loginWeb(String user) {
+	def loginWeb(String user) {		
 		loginInput(user)
 
 		// Get token from local storage browser
@@ -147,22 +146,20 @@ class CommonWebStep {
 		    }
 		    return items[Object.keys(items)[0]];
 		""", keyToRetrieve)
+		
+		// Validate and parse token
 		if (localStorageValue != null && !localStorageValue.isEmpty()) {
-			// Parse the JSON string
 			def jsonSlurper = new JsonSlurper()
 			def jsonObject = jsonSlurper.parseText(localStorageValue)
-			// Save and Print token
-			if (jsonObject.body.access_token) {
-				GlobalVariable.bearerToken = jsonObject.body.access_token
-				println("Token: " + jsonObject.body.access_token)
+			def accessToken = jsonObject.body?.access_token
+			if (accessToken) {
+				GlobalVariable.bearerToken = accessToken
+				WebUI.comment("Token successfully retrieved and stored.")
 			} else {
-				println("Token field not found in JSON.")
+				WebUI.comment("Token field not found in JSON.")
 			}
-
-			// Access other fields as needed
-			println("Full JSON Data: " + jsonObject)
 		} else {
-			println("Local Storage Value for '" + keyToRetrieve + "': " + localStorageValue)
+			WebUI.comment("No local storage value found for key: " + keyToRetrieve)
 		}
 	}
 
@@ -243,41 +240,30 @@ class CommonWebStep {
 
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
-		WebUI.waitForElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 5, FailureHandling.OPTIONAL)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 5, FailureHandling.OPTIONAL)) {
+		try {
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
-		} else {
-			println "Continue button is not present."
+		} catch (WebElementNotFoundException e){
+			WebUI.comment("Exceed Limit Device is not present.")
 		}
 	}
 
 	// dismiss refresh toast popup
 	def dismissRefreshPopup() {
-		WebUI.waitForElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 5, FailureHandling.OPTIONAL)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'), 5, FailureHandling.OPTIONAL)) {
+		try {
 			WebUI.click(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'))
-		} else {
-			println "Refresh toast popup is not present."
+		} catch (WebElementNotFoundException e){
+			WebUI.comment("Refresh toast popup is not present.")
 		}
 	}
 
 	// input otp if otp login is active
 	def inputOTP() {
-		WebUI.waitForElementVisible(findTestObject('Object Repository/Web/LoginPage/OTPField'), 5, FailureHandling.OPTIONAL)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 5, FailureHandling.OPTIONAL)) {
+		try {
 			String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
-		} else {
+		} catch (StepFailedException e){
 			WebUI.comment("OTP field is not present. Continuing without OTP.")
 		}
-	}
-
-	WebDriver getDriver1() {
-		return driver1
-	}
-
-	WebDriver getDriver2() {
-		return driver2
 	}
 }
