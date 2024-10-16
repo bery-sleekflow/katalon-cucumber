@@ -1,0 +1,46 @@
+{
+    "users":[
+        {
+            "user": "invalid",
+            "name":"Invalid",
+            "email":"bery.o+stagingadmin@sleekflow.io",
+            "password": "test123",
+            "otpsecret": ""
+        },
+        {
+            "user": "admin1",
+            "name":"Bery Staging Admin",
+            "email":"bery.o+stagingadmin@sleekflow.io",
+            "password": "hpr0bpa_zjc.RKW8hnu",
+            "otpsecret": "FY4CGQB6KBAWMUD3F5IESMCUM45CKRCJ"
+        },
+        {
+            "user": "staff1",
+            "name":"Bery Staff",
+            "email":"bery.o+stgstaff@sleekflow.io",
+            "password": "tNmm637_fHgRhcuJYXH*",
+            "otpsecret": ""
+        },
+        {
+            "user": "teamadmin1",
+            "name":"Bery Teamadmin",
+            "email":"bery.o+teamadminstg@sleekflow.io",
+            "password": "utf*HWG5crn_mna.bmh",
+            "otpsecret": ""
+        },
+        {
+            "user": "admin2",
+            "name":"Bery New Company",
+            "email":"bery.o+companynewstaging@sleekflow.io",
+            "password": "Lywjo*Ua7!!4fHce4AuU",
+            "otpsecret": "GJAVIURKIIVFI2JFH4ZSQVCJM4VCGM3F"
+        },
+        {
+            "user": "staff2",
+            "name":"Bery Company Staff",
+            "email":"bery.o+companynewstaff@sleekflow.io",
+            "password": "Q9XvLX@CuxFNRw*vEyR.",
+            "otpsecret": "LVYCGKDTEM2VCKKPMZUTQKCQPE3UGPDS"
+        }
+    ]
+}

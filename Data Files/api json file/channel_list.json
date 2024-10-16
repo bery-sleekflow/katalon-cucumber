@@ -1,0 +1,33 @@
+{
+    "channels": {
+        "WhatsApp Official API":[
+            {
+                "name":"Jason Testing",
+                "wabaId": "3dU7z7ZEdKvzR6K",
+                "wabaPhoneNumberId": "eXiQ1QPnVJ41m7Y"
+            }
+        ],
+        "WhatsApp 360dialog": [
+            {
+                "name":"360 dialog",
+                "id": "3"
+            }
+        ],
+        "Telegram": [
+            {
+                "name":"Joe Telegram",
+                "id": "30024"
+            }
+        ],
+        "Facebook Messenger": [
+            {
+                "name":"SF V2 Second Testing Page",
+                "id": "111849445354924"
+            },
+            {
+                "name":"FLFB Testing Page",
+                "id": "175520422315600"
+            }
+        ]
+    }
+}

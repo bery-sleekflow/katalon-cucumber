@@ -19,6 +19,7 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.testdata.CSVData
+import com.kms.katalon.core.exception.StepFailedException
 
 import internal.GlobalVariable
 
@@ -27,7 +28,6 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
 
 import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
-import com.kms.katalon.core.webui.common.WebUiCommonHelper
 import com.kms.katalon.core.webui.driver.DriverFactory
 
 import com.kms.katalon.core.testobject.RequestObject
@@ -49,22 +49,14 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.JavascriptExecutor
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import com.kms.katalon.core.testobject.impl.HttpTextBodyContent
+import CustomKeywords
 
 
-
-class CommonStep {
+class CommonWebStep {
 	//web
-	WebDriver driver
-	WebDriver driver1
-	WebDriver driver2
+	WebDriver driver = null
+	WebDriver driver1, driver2
 	def credential
-	def mfaReader = new readMFA()
-
-	//api
-	ResponseObject response
-	RequestObject request
-	Map<String, Object> bodyFieldsToModify = [:]
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
@@ -73,7 +65,6 @@ class CommonStep {
 			driver = new ChromeDriver()
 			DriverFactory.changeWebDriver(driver)
 		}
-
 		if (version == 'v2') {
 			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
@@ -110,40 +101,36 @@ class CommonStep {
 
 	def loginInput(String user) {
 		// check user from data files
-		credential = searchUser(user)
+		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
 		if (credential == null) {
 			WebUI.comment("User not found: " + user)
 			return
 		}
-		// login via web
+		// login process
 		try {
 			// input username
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/UsernameField'), 15)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/UsernameField'), credential.email)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueSignInButton'))
+
 			// input password
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/PasswordField'), 15)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/SignInButton'))
 
-			//input OTP if enabled
-			if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/OTPField'), 15)){
-				String totpCode = mfaReader.GetMFAToken(credential.otpsecret)
-				WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
-				WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
-			}
-			
+			// input if otp is enabled
+			inputOTP()
 			WebUI.waitForPageLoad(15)
-			if(WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.baseUrl + '.*', true)) {
-				continueExcedeedDeviceLimit()
-			}
+			// check exceed device limit and refresh page popup
+			continueExcedeedDeviceLimit()
+			dismissRefreshPopup()
 		} catch (Exception e) {
 			WebUI.comment("An error occurred during the login process: " + e.getMessage())
 		}
 	}
 
 	@When("I log in using {string} credential")
-	def loginWeb(String user) {
+	def loginWeb(String user) {		
 		loginInput(user)
 
 		// Get token from local storage browser
@@ -159,22 +146,20 @@ class CommonStep {
 		    }
 		    return items[Object.keys(items)[0]];
 		""", keyToRetrieve)
+		
+		// Validate and parse token
 		if (localStorageValue != null && !localStorageValue.isEmpty()) {
-			// Parse the JSON string
 			def jsonSlurper = new JsonSlurper()
 			def jsonObject = jsonSlurper.parseText(localStorageValue)
-			// Save and Print token
-			if (jsonObject.body.access_token) {
-				GlobalVariable.bearerToken = jsonObject.body.access_token
-				println("Token: " + jsonObject.body.access_token)
+			def accessToken = jsonObject.body?.access_token
+			if (accessToken) {
+				GlobalVariable.bearerToken = accessToken
+				WebUI.comment("Token successfully retrieved and stored.")
 			} else {
-				println("Token field not found in JSON.")
+				WebUI.comment("Token field not found in JSON.")
 			}
-
-			// Access other fields as needed
-			println("Full JSON Data: " + jsonObject)
 		} else {
-			println("Local Storage Value for '" + keyToRetrieve + "': " + localStorageValue)
+			WebUI.comment("No local storage value found for key: " + keyToRetrieve)
 		}
 	}
 
@@ -253,125 +238,32 @@ class CommonStep {
 		WebUI.click(findTestObject('Object Repository/Web/TopNavBar/SignOutButton'))
 	}
 
-	def static clearElementText(TestObject to) {
-		WebElement element = WebUiCommonHelper.findWebElement(to,30)
-		WebUI.executeJavaScript("arguments[0].value=''", Arrays.asList(element))
-		WebUI.delay(2)
-	}
-
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
-		WebUI.delay(10)
-		if (WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'), 10, FailureHandling.OPTIONAL)) {
-			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
-		} else {
-			println "Continue button is not present."
-		}
-	}
-
-	// search user from CSV
-	def searchUser(String user) {
-		CSVData data = TestDataFactory.findTestData('Data Files/staging_login')
-		for (def row = 1; row <= data.getRowNumbers(); row++) {
-			if (data.getValue('user', row) == user) {
-				return [name: data.getValue('name', row), email: data.getValue('email', row), password: data.getValue('password', row), otpsecret: data.getValue('otpsecret', row)]
-			}
-		}
-		return null
-	}
-
-	// Generate a random number with a specified number of digits
-	def randomNumberGenerator(int numberOfDigits) {
-		int min = (int) Math.pow(10, numberOfDigits - 1)  // Minimum value (e.g., 1000 for 4 digits)
-		int max = (int) Math.pow(10, numberOfDigits) - 1  // Maximum value (e.g., 9999 for 4 digits)
-
-		Random rand = new Random()
-		int randomNumber = rand.nextInt((max - min) + 1) + min
-
-		return randomNumber
-	}
-
-	@When("I call {string} to endpoint {string} with body {string}")
-	def callSleekflowApi(String method, String endpoint, String jsonFilePath) {
-		// validate request method
-		if (![
-					"POST",
-					"PUT",
-					"GET",
-					"DELETE"
-				].contains(method.toUpperCase())) {
-			println "API method is invalid"
-			return
-		}
-
-		// Create the RequestObject
-		def fullEndpoint = GlobalVariable.v2ApiBaseUrl + '/' + endpoint
-		request = new RequestObject()
-		request.setRestUrl(fullEndpoint)
-		request.setRestRequestMethod(method)
-
-		// Set Authorization header (Bearer Token)
-		request.setHttpHeaderProperties([
-			new TestObjectProperty("Authorization", com.kms.katalon.core.testobject.ConditionType.EQUALS, "Bearer " + GlobalVariable.bearerToken),
-			new TestObjectProperty("Content-Type", com.kms.katalon.core.testobject.ConditionType.EQUALS, "application/json")
-		])
-
-		// Read body content from the JSON file
-		if (["POST", "PUT", "DELETE"].contains(method.toUpperCase()) && jsonFilePath != null) {
-			// Modify JSON file content and get the updated request body
-			String modifiedRequestBody = modifyBodyContentJsonFile(jsonFilePath, bodyFieldsToModify)
-
-			if (modifiedRequestBody != null) {
-				request.setBodyContent(new HttpTextBodyContent(modifiedRequestBody, "UTF-8", "application/json"))
-			} else {
-				println "Failed to read or modify the body content from: " + jsonFilePath
-				return
-			}
-		}
-
-		// Send the request
-		response = WS.sendRequest(request)
-		if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
-			println "Success for call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
-		}else {
-			println "Failed to call " + method + " for endpoint " + fullEndpoint + " with status code " + response.getStatusCode()
-		}
-
-		//println "Response body: " + response.getResponseBodyContent()
-	}
-
-	// General function to modify body content from a JSON file
-	def modifyBodyContentJsonFile(String jsonFilePath, Map<String, Object> fieldsToModify) {
 		try {
-			File jsonFile = new File(jsonFilePath)
-
-			if (!jsonFile.exists()) {
-				println "JSON file not found at: " + jsonFilePath
-				return null
-			}
-
-			// Parse the JSON file
-			def jsonSlurper = new JsonSlurper()
-			def jsonContent = jsonSlurper.parseText(jsonFile.text)
-
-			// Modify the specified fields in the JSON
-			fieldsToModify.each { key, value ->
-				jsonContent[key] = value
-			}
-
-			// Convert the modified map back to a JSON string
-			return JsonOutput.toJson(jsonContent)
-		} catch (Exception e) {
-			println "Error while modifying JSON content: " + e.message
-			return null
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueExceedLimitButton'))
+		} catch (WebElementNotFoundException e){
+			WebUI.comment("Exceed Limit Device is not present.")
 		}
 	}
 
-	WebDriver getDriver1() {
-		return driver1
+	// dismiss refresh toast popup
+	def dismissRefreshPopup() {
+		try {
+			WebUI.click(findTestObject('Object Repository/Web/CommonObject/refreshPageCloseButton'))
+		} catch (WebElementNotFoundException e){
+			WebUI.comment("Refresh toast popup is not present.")
+		}
 	}
 
-	WebDriver getDriver2() {
-		return driver2
+	// input otp if otp login is active
+	def inputOTP() {
+		try {
+			String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
+			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
+			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
+		} catch (StepFailedException e){
+			WebUI.comment("OTP field is not present. Continuing without OTP.")
+		}
 	}
 }

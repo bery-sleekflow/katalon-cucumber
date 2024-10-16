@@ -1,4 +1,3 @@
-package common
 import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
@@ -7,7 +6,7 @@ import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
 import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.checkpoint.Checkpoint
 import com.kms.katalon.core.checkpoint.CheckpointFactory
-import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
+import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords
 import com.kms.katalon.core.model.FailureHandling
 import com.kms.katalon.core.testcase.TestCase
 import com.kms.katalon.core.testcase.TestCaseFactory
@@ -15,11 +14,10 @@ import com.kms.katalon.core.testdata.TestData
 import com.kms.katalon.core.testdata.TestDataFactory
 import com.kms.katalon.core.testobject.ObjectRepository
 import com.kms.katalon.core.testobject.TestObject
-import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
+import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
+import com.kms.katalon.core.webui.common.WebUiCommonHelper
 
-import common.CommonWebStep
-import mobile.CommonMobile
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -39,45 +37,22 @@ import com.kms.katalon.core.util.KeywordUtil
 
 import com.kms.katalon.core.webui.exception.WebElementNotFoundException
 
-import com.kms.katalon.core.context.TestCaseContext
 
-import cucumber.api.java.en.And
-import cucumber.api.java.en.Given
-import cucumber.api.java.en.Then
-import cucumber.api.java.en.When
-
-
-
-class CommonSharedStep {
-	CommonWebStep commonStep = new CommonWebStep()
-	CommonMobile commonMobile = new CommonMobile()
-
-	@Given("I log in on {string} using {string}")
-	def userLogin(String platform, String user) {
-		if(platform == 'web') {
-			commonStep.openSleekflowWeb("v2")
-			commonStep.loginWeb(user)
-		}else {
-			commonMobile.openMobileApp("sleekflow")
-			commonMobile.loginSleekflowMobile(user)
-		}
-	}
-	
-	@When("I log out from sleekflow")
-	def userLogout() {
-		if (commonStep.driver != null) {
-			commonStep.logoutSleekflowWeb()
-		} else {
-			commonMobile.logoutSleekflowMobile()
-		}
+class WebHelper {
+	// Refresh browser
+	@Keyword
+	def refreshBrowser() {
+		KeywordUtil.logInfo("Refreshing")
+		WebDriver webDriver = DriverFactory.getWebDriver()
+		webDriver.navigate().refresh()
+		KeywordUtil.markPassed("Refresh successfully")
 	}
 
-	@Then("I should see {string} page")
-	def verifyPageAfterLogin(String page) {
-		if (commonStep.driver != null) {
-			commonStep.verifyCurrentPage(page)
-		} else {
-			commonMobile.verifyMobilePage(page)
-		}
+	// Clear text in element browser
+	@Keyword
+	def clearElementText(TestObject to) {
+		WebElement element = WebUiCommonHelper.findWebElement(to,15)
+		WebUI.executeJavaScript("arguments[0].value=''", Arrays.asList(element))
+		WebUI.delay(2)
 	}
 }

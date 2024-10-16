@@ -4,7 +4,6 @@ import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
 import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
 
-import com.kms.katalon.core.annotation.Keyword
 import com.kms.katalon.core.checkpoint.Checkpoint
 import com.kms.katalon.core.checkpoint.CheckpointFactory
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
@@ -18,7 +17,8 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
-import common.CommonStep
+import CustomKeywords
+import common.CommonWebStep
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -50,13 +50,13 @@ import cucumber.api.java.en.When
 
 
 class CommonMobile {
-	CommonStep common = new CommonStep()
-	def credential	
+	CommonWebStep common = new CommonWebStep()
+	def credential
 
 	@When("I log in using mobile {string} credential")
 	def loginSleekflowMobile(String user) {
 		// check user from data files
-		credential = common.searchUser(user)
+		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
 		if (credential == null) {
 			Mobile.comment("User not found: " + user)
 			return
@@ -67,41 +67,45 @@ class CommonMobile {
 			continueExcedeedDeviceLimit()
 		} else {
 			/*if (Mobile.verifyElementVisible(findTestObject("Object Repository/Mobile/SleekFlow/LoginPage/Exceed Limit - Continue here button"), 5)) {
-				KeywordUtil.logInfo("Currently on exceed limit page, tap continue")
+			 KeywordUtil.logInfo("Currently on exceed limit page, tap continue")
+			 continueExcedeedDeviceLimit()
+			 } else {*/
+			if (Mobile.verifyElementVisible(findTestObject("Object Repository/Mobile/SleekFlow/NavBar/My Profile"), 5)){
+				KeywordUtil.logInfo("Currently not on login page, logging out first")
+				logoutSleekflowMobile()
+				loginInputSleekflowMobile()
 				continueExcedeedDeviceLimit()
-			} else {*/
-				if (Mobile.verifyElementVisible(findTestObject("Object Repository/Mobile/SleekFlow/NavBar/My Profile"), 5)){
-					KeywordUtil.logInfo("Currently not on login page, logging out first")
-					logoutSleekflowMobile()
-					loginInputSleekflowMobile()
-					continueExcedeedDeviceLimit()
-				} else {
-					KeywordUtil.logInfo("Cannot find condition")
-					return
-				}
+			} else {
+				KeywordUtil.logInfo("Cannot find condition")
+				return
+			}
 			//}
 		}
 	}
-	
+
 	def loginInputSleekflowMobile() {
 		KeywordUtil.logInfo("Performing login process")
+		// input email
 		Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/LoginPage/Continue to Sleekflow button"), 5)
 		Mobile.setText(findTestObject('Object Repository/Mobile/SleekFlow/LoginPage/Username input'), credential.email, 5)
 		Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/LoginPage/Continue Login"), 5)
 		Mobile.delay(5)
+
+		// input password
 		Mobile.setText(findTestObject('Object Repository/Mobile/SleekFlow/LoginPage/Password input'), credential.password, 5)
 		Mobile.tap(findTestObject('Object Repository/Mobile/SleekFlow/LoginPage/Sign in button'), 5)
 		Mobile.delay(3)
 	}
-	
+
+	@When("I log out from sleekflow mobile")
 	def logoutSleekflowMobile() {
 		KeywordUtil.logInfo("Performing logout process")
-	    Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/NavBar/My Profile"), 5)
+		Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/NavBar/My Profile"), 5)
 		Mobile.scrollToText('Sign out', FailureHandling.OPTIONAL)
-	    Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/MyProfilePage/Sign out button"), 5)
-	    Mobile.delay(3)
+		Mobile.tap(findTestObject("Object Repository/Mobile/SleekFlow/MyProfilePage/Sign out button"), 5)
+		Mobile.delay(3)
 	}
-	
+
 	// click continue if exceed limit device
 	def continueExcedeedDeviceLimit() {
 		if (Mobile.verifyElementExist(findTestObject('Object Repository/Mobile/SleekFlow/LoginPage/Exceed Limit - Continue here button'), 10, FailureHandling.OPTIONAL)) {
@@ -110,7 +114,7 @@ class CommonMobile {
 			KeywordUtil.logInfo("Continue button is not present.")
 		}
 	}
-	
+
 	// Function to check if the login page is displayed
 	boolean isLoginPageDisplayed() {
 		Mobile.delay(5)
@@ -120,7 +124,7 @@ class CommonMobile {
 			return false
 		}
 	}
-	
+
 	@Then("I should be ON {string} mobile page")
 	def verifyMobilePage(String page) {
 		if (page == 'inbox'){
