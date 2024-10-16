@@ -17,7 +17,6 @@ import com.kms.katalon.core.testobject.TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
-import CustomKeywords
 import common.CommonWebStep
 import internal.GlobalVariable
 

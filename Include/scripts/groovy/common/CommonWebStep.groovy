@@ -49,7 +49,6 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.JavascriptExecutor
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import CustomKeywords
 
 
 class CommonWebStep {
