@@ -1,12 +1,15 @@
 name: Katalon CI
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - ci-cd-integration
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 jobs:
   katalon-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
         # Step 1: Checkout the repository
         - name: Checkout repository
