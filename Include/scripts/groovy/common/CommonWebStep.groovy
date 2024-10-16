@@ -59,7 +59,7 @@ class CommonWebStep {
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
-		System.setProperty("webdriver.chrome.driver", "/Applications/"+ GlobalVariable.KatalonApp +"/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		System.setProperty("webdriver.chrome.driver", GlobalVariable.KatalonApp)
 		if (this.driver == null) {
 			driver = new ChromeDriver()
 			DriverFactory.changeWebDriver(driver)
