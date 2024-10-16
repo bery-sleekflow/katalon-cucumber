@@ -1,0 +1,34 @@
+name: Katalon CI
+
+on:
+  push:
+    branches:
+      - master
+      - ci-cd-integration
+  pull_request:
+    branches:
+      - master
+  # Add the workflow_dispatch event to allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  katalon:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Run Katalon in Docker
+      run: |
+        docker run -t --rm \
+          -v ${{ github.workspace }}:/katalon/project \
+          -v ${{ github.workspace }}/report:/katalon/report \
+          katalonstudio/katalon:latest katalonc \
+          -projectPath="/katalon/project/e2e-web.prj" \
+          -retry=0 \
+          -testSuitePath="Test Suites/Regression Web" \
+          -executionProfile="default" \
+          -browserType="Chrome" \
+          -reportFolder="/katalon/report" \
+          -apiKey="${{ secrets.KATALON_API_KEY }}"
