@@ -28,6 +28,7 @@ jobs:
     - name: Run Katalon in Docker
       run: |
         docker run -t --rm \
+          -e JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom -Duser.timezone=UTC" \
           -v ${{ github.workspace }}:/katalon/project \
           -v ${{ github.workspace }}/report:/katalon/report \
           katalonstudio/katalon:latest katalonc \
