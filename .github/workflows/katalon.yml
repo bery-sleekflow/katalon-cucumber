@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - master
+  # Add the workflow_dispatch event to allow manual triggering
+  workflow_dispatch:
 jobs:
   katalon-test:
     runs-on: self-hosted
