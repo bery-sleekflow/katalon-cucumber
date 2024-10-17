@@ -24,10 +24,11 @@ jobs:
         java-version: 17
         distribution: 'temurin'
 
-    - name: Install Katalon Studio
+    - name: Download Katalon Studio Engine
       run: |
-        curl -O https://download.katalon.com/9.x/Katalon_Studio_Engine_Linux_64-9.x.zip 
-        unzip Katalon_Studio_Engine_Linux_64-9.x.zip -d /opt/katalon
+        curl -L -o katalon.zip https://download.katalon.com/9.x/Katalon_Studio_Engine_Linux_64-9.x.zip
+        ls -l katalon.zip
+        unzip katalon.zip -d /opt/katalon
         export KATALON_HOME=/opt/katalon/Katalon_Studio_Engine_Linux_64-9.x
 
     - name: Run Katalon Test Suite
