@@ -59,9 +59,12 @@ class CommonWebStep {
 
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
+		// Set Chrome options for Docker environment
+    	ChromeOptions options = new ChromeOptions()
+    	options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu")
 		System.setProperty("webdriver.chrome.driver", GlobalVariable.KatalonApp)
 		if (this.driver == null) {
-			driver = new ChromeDriver()
+			driver = new ChromeDriver(options)
 			DriverFactory.changeWebDriver(driver)
 		}
 		if (version == 'v2') {
