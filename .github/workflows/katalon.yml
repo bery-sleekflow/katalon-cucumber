@@ -1,44 +1,50 @@
-name: Katalon CI
+name: Katalon CI/CD
+
 on:
   push:
     branches:
       - master
+      - ci-cd-integration
   pull_request:
     branches:
       - master
-  # Add the workflow_dispatch event to allow manual triggering
   workflow_dispatch:
+
 jobs:
-  katalon-test:
-    runs-on: self-hosted
+  katalon:
+    runs-on: ubuntu-latest  # or macos-latest, depending on your need
+
     steps:
-        # Step 1: Checkout the repository
-        - name: Checkout repository
-          uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-        # Step 2: Set up JDK (Katalon requires Java)
-        - name: Set up JDK 11
-          uses: actions/setup-java@v3
-          with:
-            distribution: 'temurin'   # Or 'zulu', 'adopt', etc.
-            java-version: '11'
-            java-package: 'jdk'
-            check-latest: false
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'temurin'
 
-        # Step 3: Install Katalon Studio
-        - name: Install Katalon Studio
-          run: |
-            wget https://github.com/katalon-studio/katalon-studio/releases/download/v8.4.0/Katalon_Studio_Linux_64-8.4.0.tar.gz
-            tar -xzf Katalon_Studio_Linux_64-8.4.0.tar.gz
+    - name: Install Katalon Studio
+      run: |
+        curl -O https://download.katalon.com/9.x/Katalon_Studio_Engine_Linux_64-9.x.zip 
+        unzip Katalon_Studio_Engine_Linux_64-9.x.zip -d /opt/katalon
+        export KATALON_HOME=/opt/katalon/Katalon_Studio_Engine_Linux_64-9.x
 
-        # Step 4: Run Katalon Tests
-        - name: Run Katalon Tests
-          run: |
-            ./katalonc -noSplash -runMode=console -projectPath="e2e-web.prj" -retry=0 -testSuitePath="Test Suites/Regression Web" -executionProfile="default" -browserType="Chrome"
+    - name: Run Katalon Test Suite
+      run: |
+        $KATALON_HOME/katalonc \
+          -projectPath="$(pwd)/e2e-web.prj" \
+          -retry=0 \
+          -testSuitePath="Test Suites/Regression Web" \
+          -executionProfile="CICD" \
+          -browserType="Chrome" \
+          -reportFolder="$(pwd)/report" \
+          -apiKey="${{ secrets.KATALON_API_KEY }}" \
+          --config -webui.autoUpdateDrivers=true \
+          -Dwebdriver.chrome.options="--no-sandbox --disable-dev-shm-usage --disable-gpu"
 
-        # Step 5: Store Test Results
-        - name: Archive Test Results
-          uses: actions/upload-artifact@v3
-          with:
-            name: test-results
-            path: ./Reports/
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: report/

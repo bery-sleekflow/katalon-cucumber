@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - ci-cd-integration
   pull_request:
     branches:
       - master
