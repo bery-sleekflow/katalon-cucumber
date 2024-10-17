@@ -33,5 +33,4 @@ jobs:
           -reportFolder="/katalon/report" \
           -apiKey="${{ secrets.KATALON_API_KEY }}" \
           --config -webui.autoUpdateDrivers=true \
-          -Dwebdriver.chrome.driver=/opt/google/chrome/google-chrome \
           -Dwebdriver.chrome.options="--no-sandbox --disable-dev-shm-usage --disable-gpu"
