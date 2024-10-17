@@ -1,4 +1,4 @@
-name: Katalon CI
+name: Katalon Mac OS
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Katalon CI
+name: Katalon Docker
 
 on:
   push:

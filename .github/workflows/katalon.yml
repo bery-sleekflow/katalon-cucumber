@@ -12,7 +12,7 @@ on:
 
 jobs:
   katalon:
-    runs-on: ubuntu-latest  # or macos-latest, depending on your need
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
