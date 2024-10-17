@@ -25,14 +25,18 @@ jobs:
         java-version: 17
         distribution: 'adopt'
     
+    - name: Install Google Chrome
+      run: |
+        brew install --cask google-chrome
+
     - name: Update ChromeDriver
       run: |
         CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
         DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-        wget https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /opt/katalonstudio/configuration/resources/drivers/chromedriver_linux64/chromedriver
-        rm chromedriver_linux64.zip
+        wget https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_mac64.zip
+        unzip chromedriver_mac64.zip
+        sudo mv chromedriver /opt/katalonstudio/configuration/resources/drivers/chromedriver_mac64/chromedriver
+        rm chromedriver_mac64.zip
 
     - name: Run Katalon in Docker
       run: |
