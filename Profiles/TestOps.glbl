@@ -74,4 +74,9 @@
       <initValue>'https://sleekflow-core-staging-dycncqcebbf4ggag.z01.azurefd.net'</initValue>
       <name>v2ApiBaseUrl</name>
    </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'&quot;--headless&quot;, &quot;--no-sandbox&quot;, &quot;--disable-dev-shm-usage&quot;, &quot;--disable-gpu&quot;'</initValue>
+      <name>chromeArgument</name>
+   </GlobalVariableEntity>
 </GlobalVariableEntities>

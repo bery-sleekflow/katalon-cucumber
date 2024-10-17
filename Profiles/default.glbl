@@ -26,7 +26,7 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'/Applications/Katalon Studio Arm64.app/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver\n'</initValue>
+      <initValue>'/Applications/Katalon Studio Arm64.app/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver'</initValue>
       <name>KatalonApp</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
@@ -83,5 +83,10 @@
       <description></description>
       <initValue>'https://sleekflow-core-staging-dycncqcebbf4ggag.z01.azurefd.net'</initValue>
       <name>v2ApiBaseUrl</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>''</initValue>
+      <name>chromeArgument</name>
    </GlobalVariableEntity>
 </GlobalVariableEntities>

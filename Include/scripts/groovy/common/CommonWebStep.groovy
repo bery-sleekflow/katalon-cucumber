@@ -22,7 +22,7 @@ import com.kms.katalon.core.testdata.CSVData
 import com.kms.katalon.core.exception.StepFailedException
 
 import internal.GlobalVariable
-
+import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
@@ -50,7 +50,6 @@ import org.openqa.selenium.JavascriptExecutor
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-
 class CommonWebStep {
 	//web
 	WebDriver driver = null
@@ -60,8 +59,8 @@ class CommonWebStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		// Set Chrome options for Docker environment
-    	ChromeOptions options = new ChromeOptions()
-    	options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu")
+		ChromeOptions options = new ChromeOptions()
+		options.addArguments(GlobalVariable.chromeArgument)
 		System.setProperty("webdriver.chrome.driver", GlobalVariable.KatalonApp)
 		if (this.driver == null) {
 			driver = new ChromeDriver(options)
@@ -132,7 +131,7 @@ class CommonWebStep {
 	}
 
 	@When("I log in using {string} credential")
-	def loginWeb(String user) {		
+	def loginWeb(String user) {
 		loginInput(user)
 
 		// Get token from local storage browser
@@ -148,7 +147,7 @@ class CommonWebStep {
 		    }
 		    return items[Object.keys(items)[0]];
 		""", keyToRetrieve)
-		
+
 		// Validate and parse token
 		if (localStorageValue != null && !localStorageValue.isEmpty()) {
 			def jsonSlurper = new JsonSlurper()
