@@ -24,7 +24,7 @@ jobs:
           -e JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom -Duser.timezone=UTC" \
           -v ${{ github.workspace }}:/katalon/project \
           -v ${{ github.workspace }}/report:/katalon/report \
-          katalonstudio/katalon katalonc \
+          katalonstudio/katalon:9-latest katalonc \
           -projectPath="/katalon/project/e2e-web.prj" \
           -retry=0 \
           -testSuitePath="Test Suites/Regression Web" \

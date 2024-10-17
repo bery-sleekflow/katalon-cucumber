@@ -59,7 +59,7 @@ class CommonWebStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		// Set Chrome options for Docker environment
-		/*ChromeOptions options = new ChromeOptions()
+		ChromeOptions options = new ChromeOptions()
 		options.addArguments(GlobalVariable.chromeArgument)
 		System.setProperty("webdriver.chrome.driver", GlobalVariable.KatalonApp)
 		if (this.driver == null) {
@@ -72,9 +72,9 @@ class CommonWebStep {
 			WebUI.navigateToUrl(GlobalVariable.v1_staging)
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
-		}*/
+		}
 
-		if (version == 'v2') {
+		/*if (version == 'v2') {
 			WebUI.openBrowser(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
 			WebUI.openBrowser(GlobalVariable.v1_staging)
@@ -82,7 +82,7 @@ class CommonWebStep {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
 		driver = DriverFactory.getWebDriver()
-
+		*/
 		maximizeWindowBrowser()
 	}
 
