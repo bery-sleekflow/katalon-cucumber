@@ -18,13 +18,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Check Chrome and ChromeDriver version
-      run: |
-        docker run --shm-size=4g -t --rm \
-          katalonstudio/katalon:9-latest bash -c "\
-          google-chrome --version && \
-          chromedriver --version"
-
     - name: Run Katalon in Docker
       run: |
         docker run --shm-size=4g -t --rm \
