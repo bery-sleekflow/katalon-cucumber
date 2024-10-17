@@ -60,30 +60,30 @@ class CommonWebStep {
 	@Given("I open Sleekflow {string}")
 	def openSleekflowWeb(String version) {
 		// Set Chrome options for Docker environment
-		/*ChromeOptions options = new ChromeOptions()
-		 options.addArguments(GlobalVariable.chromeArgument)
-		 System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
-		 if (this.driver == null) {
-		 driver = new ChromeDriver(options)
-		 DriverFactory.changeWebDriver(driver)
-		 }
-		 if (version == 'v2') {
-		 WebUI.navigateToUrl(GlobalVariable.v2_staging)
-		 } else if (version == 'v1') {
-		 WebUI.navigateToUrl(GlobalVariable.v1_staging)
-		 } else {
-		 throw new IllegalArgumentException("Unknown version: " + version)
-		 }*/
-
+		ChromeOptions options = new ChromeOptions()
+		options.addArguments(GlobalVariable.chromeArgument)
+		System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
+		if (this.driver == null) {
+			driver = new ChromeDriver(options)
+			DriverFactory.changeWebDriver(driver)
+		}
 		if (version == 'v2') {
-			WebUI.openBrowser(GlobalVariable.v2_staging)
+			WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		} else if (version == 'v1') {
-			WebUI.openBrowser(GlobalVariable.v1_staging)
+			WebUI.navigateToUrl(GlobalVariable.v1_staging)
 		} else {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
-		driver = DriverFactory.getWebDriver()
 
+		/*if (version == 'v2') {
+		 WebUI.openBrowser(GlobalVariable.v2_staging)
+		 } else if (version == 'v1') {
+		 WebUI.openBrowser(GlobalVariable.v1_staging)
+		 } else {
+		 throw new IllegalArgumentException("Unknown version: " + version)
+		 }
+		 driver = DriverFactory.getWebDriver()
+		 */
 		maximizeWindowBrowser()
 	}
 
@@ -178,7 +178,7 @@ class CommonWebStep {
 	@Given("I open 2 browser and log in using {string} and {string}")
 	def loginMultiple(String user1, String user2) {
 		// login as user 1
-		System.setProperty("webdriver.chrome.driver", "/Applications/" + GlobalVariable.KatalonApp + "/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver")
+		System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
 		driver1 = new ChromeDriver()  // Initialize driver1
 		if (driver1 != null) {
 			DriverFactory.changeWebDriver(driver1)
