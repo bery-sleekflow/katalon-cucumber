@@ -24,15 +24,25 @@ jobs:
         java-version: 17
         distribution: 'temurin'
 
+    # Install required dependencies for running Chrome in headless mode
+    - name: Install Chrome dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgbm-dev libxshmfence-dev libgtk-3-0 libnss3 libxss1 libasound2 fonts-liberation libappindicator3-1 xdg-utils
+
     - name: Install Katalon
       run: |
         curl -L -o katalon.tar.gz https://github.com/katalon-studio/katalon-studio/releases/download/v9.7.2/Katalon_Studio_Engine_Linux_64-9.7.2.tar.gz
         tar -xvzf katalon.tar.gz
-        mv Katalon_Studio_Engine_Linux_64-9.7.2 /opt/katalon
+        sudo mv Katalon_Studio_Engine_Linux_64-9.7.2 /opt/katalon
+
+    # Set KATALON_HOME environment variable
+    - name: Set KATALON_HOME
+      run: echo "KATALON_HOME=/opt/katalon" >> $GITHUB_ENV
 
     - name: Run Katalon Test Suite
       run: |
-        $KATALON_HOME/katalonc \
+        /opt/katalon/katalonc \
           -projectPath="$(pwd)/e2e-web.prj" \
           -retry=0 \
           -testSuitePath="Test Suites/Regression Web" \
