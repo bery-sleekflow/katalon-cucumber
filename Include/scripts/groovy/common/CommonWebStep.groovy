@@ -61,7 +61,7 @@ class CommonWebStep {
 		// Set Chrome options for Docker environment
 		ChromeOptions options = new ChromeOptions()
 		options.addArguments(GlobalVariable.chromeArgument)
-		System.setProperty("webdriver.chrome.driver", GlobalVariable.KatalonApp)
+		System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
 		if (this.driver == null) {
 			driver = new ChromeDriver(options)
 			DriverFactory.changeWebDriver(driver)

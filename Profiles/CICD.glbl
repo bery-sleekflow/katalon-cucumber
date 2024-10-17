@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalVariableEntities>
    <description></description>
-   <name>default</name>
+   <name>CICD</name>
    <tag></tag>
-   <defaultProfile>true</defaultProfile>
+   <defaultProfile>false</defaultProfile>
    <GlobalVariableEntity>
       <description></description>
       <initValue>'https://staging.sleekflow.io/'</initValue>
@@ -26,7 +26,7 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'/Applications/Katalon Studio Arm64.app/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver'</initValue>
+      <initValue>'/opt/katalonstudio/configuration/resources/drivers/chromedriver_linux64/chromedriver'</initValue>
       <name>webDriverLocation</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
@@ -37,22 +37,12 @@
    <GlobalVariableEntity>
       <description></description>
       <initValue>''</initValue>
-      <name>user</name>
-   </GlobalVariableEntity>
-   <GlobalVariableEntity>
-      <description></description>
-      <initValue>''</initValue>
       <name>user1</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
       <initValue>''</initValue>
       <name>user2</name>
-   </GlobalVariableEntity>
-   <GlobalVariableEntity>
-      <description></description>
-      <initValue>''</initValue>
-      <name>webDriver</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
@@ -86,7 +76,7 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>''</initValue>
+      <initValue>'&quot;--headless&quot;, &quot;--no-sandbox&quot;, &quot;--disable-dev-shm-usage&quot;, &quot;--disable-gpu&quot;'</initValue>
       <name>chromeArgument</name>
    </GlobalVariableEntity>
 </GlobalVariableEntities>
