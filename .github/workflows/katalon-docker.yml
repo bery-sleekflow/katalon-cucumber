@@ -24,13 +24,23 @@ jobs:
       with:
         java-version: 17
         distribution: 'adopt'
-    - name: install chrome 
-      run: |
-        sudo apt-get update && sudo apt-get install -y wget
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-        rm google-chrome-stable_current_amd64.deb
-        
+
+    - name: Install WebDriverManager
+        run: |
+          sudo apt-get install -y maven
+          git clone https://github.com/bonigarcia/webdrivermanager.git
+          cd webdrivermanager
+          mvn clean package
+    
+    - name: Update ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          wget https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /opt/katalonstudio/configuration/resources/drivers/chromedriver_linux64/chromedriver
+          rm chromedriver_linux64.zip
+
     - name: Run Katalon in Docker
       run: |
         docker run -t --rm \
