@@ -20,6 +20,7 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
 import internal.GlobalVariable
 import common.CommonApiStep
+import helper.Helper
 
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.WebDriver
@@ -47,6 +48,7 @@ import cucumber.api.java.en.When
 
 class ChannelStep {
 	CommonApiStep commonApi = new CommonApiStep()
+	Helper helper = new Helper()
 	def selectedChannel
 	def originalChannelName
 	def newChannelName
@@ -56,7 +58,7 @@ class ChannelStep {
 		selectedChannel = channel
 		originalChannelName = originalName
 		newChannelName = newName
-		
+
 		// open channel category
 		WebUI.click(findTestObject("Object Repository/Web/LeftNavBar/ChannelMenuButton"))
 		WebUI.click(findTestObject("Object Repository/Web/Channel/ChannelList", [('channelCategory') : channel]))
@@ -68,7 +70,7 @@ class ChannelStep {
 		// clear channel name
 		WebUI.waitForElementVisible(findTestObject("Object Repository/Web/Channel/RenameChannelInput"), 5)
 		WebUI.focus(findTestObject("Object Repository/Web/Channel/RenameChannelInput"))
-		CustomKeywords.'WebHelper.clearElementText'(findTestObject("Object Repository/Web/Channel/RenameChannelInput"))
+		helper.clearElementText(findTestObject("Object Repository/Web/Channel/RenameChannelInput"))
 
 		// rename channel
 		WebUI.setText(findTestObject("Object Repository/Web/Channel/RenameChannelInput"),newName)
@@ -80,10 +82,10 @@ class ChannelStep {
 		WebUI.verifyElementVisible(findTestObject("Object Repository/Web/Channel/TableListThreeDotButton", [('channelName') : name]))
 		renameChannelToOriginal()
 	}
-	
+
 	// api call to change the name back to original
 	def renameChannelToOriginal() {
-		def result = CustomKeywords.'ReadData.getChannelData'(selectedChannel, originalChannelName)
+		def result = helper.getChannelData(selectedChannel, originalChannelName)
 		switch(selectedChannel) {
 			case 'Facebook Messenger':
 				commonApi.bodyFieldsToModify["name"] = originalChannelName
@@ -97,13 +99,13 @@ class ChannelStep {
 			case 'Telegram':
 				commonApi.fieldsToRemove = ["name"]
 				commonApi.bodyFieldsToModify = [
-				    "telegramChannelId": result.id,
-				    "displayName": originalChannelName
+					"telegramChannelId": result.id,
+					"displayName": originalChannelName
 				]
 				commonApi.callSleekflowApi("PUT", "Company/telegram", "Data Files/api json file/rename_channel.json")
 				break;
 		}
-		
+
 		assert commonApi.response.getStatusCode() == 200
 	}
 }

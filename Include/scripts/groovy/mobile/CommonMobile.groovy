@@ -45,17 +45,18 @@ import cucumber.api.java.en.And
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
-
+import helper.Helper
 
 
 class CommonMobile {
 	CommonWebStep common = new CommonWebStep()
+	Helper helper = new Helper()
 	def credential
 
 	@When("I log in using mobile {string} credential")
 	def loginSleekflowMobile(String user) {
 		// check user from data files
-		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
+		credential = helper.getUserLoginData(user)
 		if (credential == null) {
 			Mobile.comment("User not found: " + user)
 			return

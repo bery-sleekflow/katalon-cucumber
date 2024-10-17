@@ -49,9 +49,10 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.JavascriptExecutor
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import helper.Helper
 
 class CommonWebStep {
-	//web
+	Helper helper = new Helper()
 	WebDriver driver = null
 	WebDriver driver1, driver2
 	def credential
@@ -60,19 +61,19 @@ class CommonWebStep {
 	def openSleekflowWeb(String version) {
 		// Set Chrome options for Docker environment
 		/*ChromeOptions options = new ChromeOptions()
-		options.addArguments(GlobalVariable.chromeArgument)
-		System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
-		if (this.driver == null) {
-			driver = new ChromeDriver(options)
-			DriverFactory.changeWebDriver(driver)
-		}
-		if (version == 'v2') {
-			WebUI.navigateToUrl(GlobalVariable.v2_staging)
-		} else if (version == 'v1') {
-			WebUI.navigateToUrl(GlobalVariable.v1_staging)
-		} else {
-			throw new IllegalArgumentException("Unknown version: " + version)
-		}*/
+		 options.addArguments(GlobalVariable.chromeArgument)
+		 System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
+		 if (this.driver == null) {
+		 driver = new ChromeDriver(options)
+		 DriverFactory.changeWebDriver(driver)
+		 }
+		 if (version == 'v2') {
+		 WebUI.navigateToUrl(GlobalVariable.v2_staging)
+		 } else if (version == 'v1') {
+		 WebUI.navigateToUrl(GlobalVariable.v1_staging)
+		 } else {
+		 throw new IllegalArgumentException("Unknown version: " + version)
+		 }*/
 
 		if (version == 'v2') {
 			WebUI.openBrowser(GlobalVariable.v2_staging)
@@ -82,7 +83,7 @@ class CommonWebStep {
 			throw new IllegalArgumentException("Unknown version: " + version)
 		}
 		driver = DriverFactory.getWebDriver()
-		
+
 		maximizeWindowBrowser()
 	}
 
@@ -112,7 +113,7 @@ class CommonWebStep {
 
 	def loginInput(String user) {
 		// check user from data files
-		credential = CustomKeywords.'ReadData.getUserLoginData'(user)
+		credential = helper.getUserLoginData(user)
 		if (credential == null) {
 			WebUI.comment("User not found: " + user)
 			return
@@ -270,7 +271,7 @@ class CommonWebStep {
 	// input otp if otp login is active
 	def inputOTP() {
 		try {
-			String totpCode = CustomKeywords.'ReadMFA.GetMFAToken'(credential.otpsecret)
+			String totpCode = helper.GetMFAToken(credential.otpsecret)
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/OTPField'), totpCode)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/ContinueOTPButton'))
 		} catch (StepFailedException e){

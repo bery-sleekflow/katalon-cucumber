@@ -20,6 +20,7 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
 import common.CommonWebStep
 import internal.GlobalVariable
+import helper.Helper
 
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.WebDriver
@@ -46,6 +47,7 @@ import cucumber.api.java.en.When
 
 
 class Inbox {
+	Helper helper = new Helper()
 	CommonWebStep commonStep = new CommonWebStep()
 	String messageToInternal, searchCategory, searchValue
 
@@ -141,7 +143,7 @@ class Inbox {
 		replyButtonChecker('enter message')
 		//  adding unique number for identifier
 		if (message == 'Message from QA Automation') {
-			message = message + CustomKeywords.'RandomGenerator.randomNumberGenerator'(4)
+			message = message + helper.randomNumberGenerator(4)
 		}
 		GlobalVariable.messageSentToCustomer = message
 		// enter message and send to customer
@@ -155,7 +157,7 @@ class Inbox {
 		// click internal note button
 		WebUI.click(findTestObject('Object Repository/Web/Inbox/ChatboxInternalnotButton'))
 		// adding unique number for identifier
-		message = message + CustomKeywords.'RandomGenerator.randomNumberGenerator'(4)
+		message = message + helper.randomNumberGenerator(4)
 		messageToInternal = message
 		// enter message and send to internal note
 		WebUI.setText(findTestObject('Object Repository/Web/Inbox/ChatboxTextArea'), message)
@@ -196,7 +198,7 @@ class Inbox {
 	@Then("user {string} should see the {string} from user {string}")
 	def verifyMessageSentByUser(String user1, String type, String user2) {
 		commonStep.changeWebDriver(user1)
-		def credential = CustomKeywords.'ReadData.getUserLoginData'(user2)
+		def credential = helper.getUserLoginData(user2)
 		// Waiting for message to be sent
 		WebUI.delay(2)
 

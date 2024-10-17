@@ -19,6 +19,7 @@ import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 
 import common.CommonWebStep
+import helper.Helper
 import internal.GlobalVariable
 
 import org.openqa.selenium.WebElement
@@ -45,10 +46,10 @@ import cucumber.api.java.en.When
 import inbox.Inbox
 
 
-
 class CommerceStep {
 	Inbox inbox = new Inbox()
 	CommonWebStep common = new CommonWebStep()
+	Helper helper = new Helper()
 
 	@When("I generate {string} payment link with {string} product")
 	def generatePaymentLink(String type, String product) {
@@ -64,12 +65,12 @@ class CommerceStep {
 	def inputCustomPaymentLink(String product) {
 		WebUI.setText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/ProductNameInput", [('id') : 0]), 'Test from automation 1')
 		WebUI.focus(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 1]))
-		CustomKeywords.'WebHelper.clearElementText'(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 1]))
+		helper.clearElementText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 1]))
 		WebUI.setText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 1]), '1000')
 		if (product != 'single') {
 			WebUI.click(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AddItemButton"))
 			WebUI.setText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/ProductNameInput", [('id') : 1]), 'Test from automation 2')
-			CustomKeywords.'WebHelper.clearElementText'(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]))
+			helper.clearElementText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]))
 			WebUI.focus(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]))
 			WebUI.setText(findTestObject("Object Repository/Web/Inbox/Commerce/CustomPaymentLink/AmountInput", [('sequence') : 2]), '1500')
 		}
