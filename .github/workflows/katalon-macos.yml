@@ -1,0 +1,38 @@
+name: Katalon CI
+
+on:
+  push:
+    branches:
+      - master
+      - ci-cd-integration
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  katalon:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Run Katalon in Docker
+      run: |
+        docker run --shm-size=4g -t --rm \
+          -e JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom -Duser.timezone=UTC" \
+          -v ${{ github.workspace }}:/katalon/project \
+          -v ${{ github.workspace }}/report:/katalon/report \
+          katalonstudio/katalon:9-latest bash -c "\
+          pkill -f chrome || true && \
+          pkill -f chromedriver || true && \
+          katalonc -projectPath='/katalon/project/e2e-web.prj' \
+          -retry=0 \
+          -testSuitePath='Test Suites/Regression Web' \
+          -executionProfile='CICD' \
+          -browserType='Chrome' \
+          -reportFolder='/katalon/report' \
+          -apiKey='${{ secrets.KATALON_API_KEY }}' \
+          --config -webui.autoUpdateDrivers=true \
+          -Dwebdriver.chrome.options='--no-sandbox --disable-dev-shm-usage --disable-gpu'"
