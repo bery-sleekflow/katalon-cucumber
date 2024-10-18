@@ -35,4 +35,4 @@ jobs:
           -reportFolder='/katalon/report' \
           -apiKey='${{ secrets.KATALON_API_KEY }}' \
           --config -webui.autoUpdateDrivers=true \
-          -Dwebdriver.chrome.options='--no-sandbox --disable-dev-shm-usage --disable-gpu'"
+          -Dwebdriver.chrome.options='--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222'"
