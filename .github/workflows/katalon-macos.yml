@@ -1,9 +1,10 @@
-name: Katalon Mac OS
+name: Katalon Docker Mac OS
 
 on:
   push:
     branches:
       - master
+      - ci-cd-integration
   pull_request:
     branches:
       - master

@@ -1,9 +1,10 @@
-name: Katalon Docker
+name: Katalon Docker Ubuntu
 
 on:
   push:
     branches:
       - master
+      - ci-cd-integration
   pull_request:
     branches:
       - master
