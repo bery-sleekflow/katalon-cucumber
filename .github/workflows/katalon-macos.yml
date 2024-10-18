@@ -18,6 +18,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Install Docker on macOS
+      run: |
+        brew install --cask docker
+        open -a Docker
+        # Wait until Docker is running
+        while ! docker system info > /dev/null 2>&1; do
+          echo "Waiting for Docker to launch..."
+          sleep 10
+        done
+
     - name: Run Katalon in Docker
       run: |
         docker run --shm-size=4g -t --rm \
@@ -36,3 +46,9 @@ jobs:
           -apiKey='${{ secrets.KATALON_API_KEY }}' \
           --config -webui.autoUpdateDrivers=true \
           -Dwebdriver.chrome.options='--no-sandbox --disable-dev-shm-usage --disable-gpu'"
+
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: report/
