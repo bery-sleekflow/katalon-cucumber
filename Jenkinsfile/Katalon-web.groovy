@@ -22,6 +22,8 @@ pipeline {
             steps {
                 // Run Katalon tests inside a Docker container
                 script {
+                    sh 'pwd' // Print current working directory
+                    sh 'ls -la /Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-9.7.2/' // List files in the directory
                     // Run Katalon tests directly on the Jenkins agent
                     sh """
                     /Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-${KATALON_VERSION}/katalonc.sh \
