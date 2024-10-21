@@ -33,7 +33,7 @@ pipeline {
                     -executionProfile=${EXECUTION_PROFILE} \
                     -browserType=${BROWSER_TYPE} \
                     -apiKey=${KATALON_API_KEY} \
-                    -Dwebdriver.chrome.options="--headless --no-sandbox --disable-dev-shm-usage" \ 
+                    -Dwebdriver.chrome.options="--headless --no-sandbox --disable-dev-shm-usage" \
                     --config -selfHealing.enabled=false -webui.autoUpdateDrivers=true
                     """
                 }
