@@ -21,10 +21,9 @@ pipeline {
         stage('Run Katalon in Docker') {
             steps {
                 script {
-                    
                     // Run Katalon tests directly on the Jenkins agent
                     sh """
-                    /Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-${KATALON_VERSION}/Katalon\ Studio\ Engine.app/Contents/MacOS/katalonc \
+                    /Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-${KATALON_VERSION}/Katalon Studio Engine.app/Contents/MacOS/katalonc \
                     -noSplash \
                     -runMode=console \
                     -projectPath=${PROJECT_PATH} \
