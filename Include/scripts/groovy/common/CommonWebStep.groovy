@@ -233,10 +233,10 @@ class CommonWebStep {
 
 	@Then("I should be on {string} page")
 	def verifyCurrentPage(String page) {
+		WebUI.verifyMatch(WebUI.getUrl(), '.*' + page + '.*', true)
 		if (page.equals("login")) {
-			WebUI.verifyMatch(WebUI.getUrl(), '.*' + GlobalVariable.loginUrl + '.*', true)
+			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/LoginPage/UsernameField'), 15)
 		} else {
-			WebUI.verifyMatch(WebUI.getUrl(), '.*' + page + '.*', true)
 			WebUI.verifyElementPresent(findTestObject('Object Repository/Web/TopNavBar/SettingMenuButton'), 15)
 		}
 	}
