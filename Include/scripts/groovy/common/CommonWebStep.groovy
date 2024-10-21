@@ -61,28 +61,28 @@ class CommonWebStep {
 	def openSleekflowWeb(String version) {
 		// Set Chrome options for Docker environment
 		ChromeOptions options = new ChromeOptions()
-		options.addArguments(GlobalVariable.chromeArgument)
-		System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
-		if (this.driver == null) {
-			driver = new ChromeDriver(options)
-			DriverFactory.changeWebDriver(driver)
-		}
-		if (version == 'v2') {
-			WebUI.navigateToUrl(GlobalVariable.v2_staging)
-		} else if (version == 'v1') {
-			WebUI.navigateToUrl(GlobalVariable.v1_staging)
-		} else {
-			throw new IllegalArgumentException("Unknown version: " + version)
-		}
-
-		/*if (version == 'v2') {
-		 WebUI.openBrowser(GlobalVariable.v2_staging)
+		 options.addArguments(GlobalVariable.chromeArgument)
+		 System.setProperty("webdriver.chrome.driver", GlobalVariable.webDriverLocation)
+		 if (this.driver == null) {
+		 driver = new ChromeDriver(options)
+		 DriverFactory.changeWebDriver(driver)
+		 }
+		 if (version == 'v2') {
+		 WebUI.navigateToUrl(GlobalVariable.v2_staging)
 		 } else if (version == 'v1') {
-		 WebUI.openBrowser(GlobalVariable.v1_staging)
+		 WebUI.navigateToUrl(GlobalVariable.v1_staging)
 		 } else {
 		 throw new IllegalArgumentException("Unknown version: " + version)
 		 }
-		 driver = DriverFactory.getWebDriver()
+
+		/*if (version == 'v2') {
+			WebUI.openBrowser(GlobalVariable.v2_staging)
+		} else if (version == 'v1') {
+			WebUI.openBrowser(GlobalVariable.v1_staging)
+		} else {
+			throw new IllegalArgumentException("Unknown version: " + version)
+		}
+		driver = DriverFactory.getWebDriver()
 		*/
 		maximizeWindowBrowser()
 	}
@@ -130,10 +130,8 @@ class CommonWebStep {
 			WebUI.setText(findTestObject('Object Repository/Web/LoginPage/PasswordField'), credential.password)
 			WebUI.click(findTestObject('Object Repository/Web/LoginPage/SignInButton'))
 
-			// input if otp is enabled
+			// input if otp is enabled, check exceed device limit and refresh page popup
 			inputOTP()
-			WebUI.waitForPageLoad(15)
-			// check exceed device limit and refresh page popup
 			continueExcedeedDeviceLimit()
 			dismissRefreshPopup()
 		} catch (Exception e) {
