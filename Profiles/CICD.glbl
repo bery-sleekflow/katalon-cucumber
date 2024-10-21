@@ -26,7 +26,7 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'/opt/katalon/configuration/resources/temp/webdriver/chromedriver'</initValue>
+      <initValue>'/Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-9.7.2/Katalon Studio Engine.app/Contents/Eclipse/configuration/resources/drivers/chromedriver_mac/chromedriver'</initValue>
       <name>webDriverLocation</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
