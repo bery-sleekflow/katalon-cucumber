@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         KATALON_VERSION = '9.7.2' // Katalon version
-        KATALON_API_KEY = credentials('KatalonApiKey') // Jenkins credentials for Katalon API Key
+        KATALON_API_KEY = ${env.KatalonApiKey} // Jenkins credentials for Katalon API Key
         PROJECT_PATH = '/katalon/project/e2e-web.prj' // Path to Katalon project
-        TEST_SUITE_PATH = 'Test Suites/Regression Web' // Test suite to run
-        EXECUTION_PROFILE = 'CICD' // Katalon execution profile
+        TEST_SUITE_PATH = 'Test Suites/${env.TestSuite}' // Test suite to run
+        EXECUTION_PROFILE = ${env.Profiles} // Katalon execution profile
         BROWSER_TYPE = 'Chrome' // Browser type
     }
 
@@ -22,20 +22,20 @@ pipeline {
             steps {
                 // Run Katalon tests inside a Docker container
                 script {
-                    docker.image("katalonstudio/katalon:${KATALON_VERSION}").inside {
-                        sh """
-                        katalonc.sh \
-                        -noSplash \
-                        -runMode=console \
-                        -projectPath=${PROJECT_PATH} \
-                        -retry=0 \
-                        -testSuitePath=${TEST_SUITE_PATH} \
-                        -executionProfile=${EXECUTION_PROFILE} \
-                        -browserType=${BROWSER_TYPE} \
-                        -apiKey=${KATALON_API_KEY} \
-                        --config -webui.autoUpdateDrivers=true
-                        """
-                    }
+                    // Run Katalon tests directly on the Jenkins agent
+                    sh """
+                    /Users/qa/.katalon/9.7.2/Katalon_Studio_Engine_MacOS-${KATALON_VERSION}/katalonc.sh \
+                    -noSplash \
+                    -runMode=console \
+                    -projectPath=${PROJECT_PATH} \
+                    -retry=0 \
+                    -testSuitePath=${TEST_SUITE_PATH} \
+                    -executionProfile=${EXECUTION_PROFILE} \
+                    -browserType=${BROWSER_TYPE} \
+                    -apiKey=${KATALON_API_KEY} \
+                    -Dwebdriver.chrome.options="--headless --no-sandbox --disable-dev-shm-usage" \ 
+                    --config -selfHealing.enabled=false -webui.autoUpdateDrivers=true
+                    """
                 }
             }
         }
