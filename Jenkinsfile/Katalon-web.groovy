@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         KATALON_VERSION = '9.7.2' // Katalon version
-        KATALON_API_KEY = ${env.KatalonApiKey} // Jenkins credentials for Katalon API Key
+        KATALON_API_KEY = "${env.KatalonApiKey}" // Jenkins credentials for Katalon API Key
         PROJECT_PATH = '/katalon/project/e2e-web.prj' // Path to Katalon project
-        TEST_SUITE_PATH = 'Test Suites/${env.TestSuite}' // Test suite to run
-        EXECUTION_PROFILE = ${env.Profiles} // Katalon execution profile
+        TEST_SUITE_PATH = "Test Suites/${env.TestSuite}" // Test suite to run
+        EXECUTION_PROFILE = "${env.Profiles}" // Katalon execution profile
         BROWSER_TYPE = 'Chrome' // Browser type
     }
 
